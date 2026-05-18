@@ -2,89 +2,57 @@
     controllerName="ferias1000.controller.Main"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:core="sap.ui.core"
-    xmlns:u="sap.ui.unified"
-    displayBlock="true">
+    xmlns:l="sap.ui.layout"
+    height="100%">
+    <Shell>
+        <App id="appFerias">
+            <pages>
+                <Page title="Férias 1000 - Planejador de Destinos">
+                    <content>
+                        <VBox class="sapUiMediumMargin">
+                            <Title text="Para onde vamos, Vovô?" level="H1" titleStyle="H1" class="sapUiSmallMarginBottom" />
+                            
+                            <HBox alignItems="Center" class="sapUiSmallMarginBottom">
+                                <Button id="btnMicrofone" text="Falar Destino" icon="sap-icon://microphone" type="Emphasized" press=".onIniciarComandoVoz" class="sapUiSmallMarginEnd"/>
+                                <Text id="txtStatusVoz" text="Clique no microfone para falar seu destino de viagem..." />
+                            </HBox>
 
-    <App id="app">
-        <Page title="Férias 1000 - Planejador &amp; Carteira">
-            <content>
-                <IconTabBar id="idIconTabBar" expandable="false" stretchContentHeight="true">
-                    <items>
-                        <IconTabFilter icon="sap-icon://map-2" text="Explorar">
-                            <ScrollContainer vertical="true" height="100%">
-                                <core:HTML content='&lt;div id="map" style="height: 350px; width: 100%; border-bottom: 2px solid #346191;"&gt;&lt;/div&gt;' />
-                                <VBox class="sapUiSmallMargin">
-                                    <Panel headerText="Dados do Local">
-                                        <HBox justifyContent="SpaceAround" alignItems="Center">
-                                            <VBox alignItems="Center">
-                                                <Label text="Cidade" design="Bold" />
+                            <l:Grid defaultSpan="XL6 L6 M12 S12" vSpacing="1" hSpacing="1">
+                                <VBox>
+                                    <Panel headerText="Informações do Destino" class="sapUiSmallMarginBottom">
+                                        <VBox class="sapUiSmallMargin">
+                                            <HBox class="sapUiTinyMarginBottom">
+                                                <Text text="Localidade: " fontWeight="Bold" class="sapUiTinyMarginEnd"/>
                                                 <Text text="{view>/local/cidade}" />
-                                                <Text text="{view>/local/pais}" />
-                                            </VBox>
-                                            <VBox alignItems="Center">
-                                                <Label text="Clima" design="Bold" />
-                                                <Title text="{view>/clima/temp}" />
-                                                <Text text="{view>/clima/desc}" />
-                                            </VBox>
-                                        </HBox>
-                                    </Panel>
-
-                                    <List items="{view>/lugares}" headerText="Atrações e Gastronomia" class="sapUiSmallMarginTop">
-                                        <CustomListItem>
-                                            <HBox alignItems="Center" class="sapUiSmallMargin">
-                                                <Image src="{view>image}" width="100px" height="70px" densityAware="false" class="sapUiSmallMarginEnd" />
-                                                <VBox>
-                                                    <Title text="{view>name}" wrapping="true" level="H4" />
-                                                    <Label text="{view>category}" />
-                                                </VBox>
                                             </HBox>
-                                        </CustomListItem>
-                                    </List>
-                                </VBox>
-                            </ScrollContainer>
-                        </IconTabFilter>
-
-                        <IconTabFilter icon="sap-icon://wallet" text="Documentos">
-                            <ScrollContainer vertical="true" height="100%">
-                                <VBox class="sapUiSmallMargin">
-                                    <Panel headerText="Arquivar Novo Documento" expandable="true" expanded="false">
-                                        <VBox spacing="10">
-                                            <Label text="Tipo de Documento" required="true" />
-                                            <Input id="inputTipo" placeholder="Ex: Passaporte do João, Visto EUA..." />
-                                            
-                                            <Label text="Data de Validade" required="true" />
-                                            <DatePicker id="inputValidade" displayFormat="dd/MM/yyyy" valueFormat="yyyy-MM-dd" />
-                                            
-                                            <Label text="Upload da Foto/Imagem" required="true" />
-                                            <u:FileUploader id="fileUploader" buttonText="Escolher Foto" fileType="jpg,png,jpeg" change="onFileUpload" width="100%" />
-                                            
-                                            <Button text="Salvar na Carteira" type="Emphasized" press="onSalvarDoc" icon="sap-icon://save" />
+                                            <HBox class="sapUiTinyMarginBottom">
+                                                <Text text="Coordenadas: " fontWeight="Bold" class="sapUiTinyMarginEnd"/>
+                                                <Text text="{view>/local/coordenadas}" />
+                                            </HBox>
+                                            <HBox class="sapUiTinyMarginBottom">
+                                                <Text text="Temperatura Estimada: " fontWeight="Bold" class="sapUiTinyMarginEnd"/>
+                                                <Text text="{view>/clima/temp}" />
+                                            </HBox>
                                         </VBox>
                                     </Panel>
 
-                                    <List id="listaDocs" items="{view>/documentos}" headerText="Meus Documentos Gravados" noDataText="Nenhum documento arquivado" class="sapUiMediumMarginTop">
-                                        <items>
-                                            <CustomListItem type="Active" press="onVerDocumento">
-                                                <HBox alignItems="Center" justifyContent="SpaceBetween" class="sapUiSmallMargin">
-                                                    <HBox alignItems="Center">
-                                                        <core:Icon src="sap-icon://attachment" size="2rem" class="sapUiSmallMarginEnd" color="{view>estadoColor}" />
-                                                        <VBox>
-                                                            <Title text="{view>tipo}" />
-                                                            <ObjectStatus text="Vencimento: {view>validadeFormatada}" state="{view>estado}" />
-                                                        </VBox>
-                                                    </HBox>
-                                                    <Button icon="sap-icon://delete" type="Transparent" press="onDeletarDoc" color="Critical" />
-                                                </HBox>
-                                            </CustomListItem>
-                                        </items>
-                                    </List>
+                                    <Panel headerText="Sugestões de Atividades">
+                                        <List items="{view>/lugares}">
+                                            <StandardListItem title="{view>name}" description="{view>category}" icon="{view>icon}" />
+                                        </List>
+                                    </Panel>
                                 </VBox>
-                            </ScrollContainer>
-                        </IconTabFilter>
-                    </items>
-                </IconTabBar>
-            </content>
-        </Page>
-    </App>
+
+                                <VBox>
+                                    <Panel headerText="Visualização do Mapa">
+                                        <html:div xmlns:html="http://www.w3.org/1999/xhtml" id="mapa_container" class="mapaContainer"></html:div>
+                                    </Panel>
+                                </VBox>
+                            </l:Grid>
+                        </VBox>
+                    </content>
+                </Page>
+            </pages>
+        </App>
+    </Shell>
 </mvc:View>
