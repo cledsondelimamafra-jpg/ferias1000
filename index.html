@@ -12,6 +12,7 @@
         src="https://sdk.openui5.org/resources/sap-ui-core.js"
         data-sap-ui-theme="sap_horizon"
         data-sap-ui-resourceroots='{ "ferias1000": "./" }'
+        data-sap-ui-libs="sap.m, sap.ui.unified"
         data-sap-ui-compatVersion="edge"
         data-sap-ui-async="true">
     </script>
@@ -22,13 +23,10 @@
                 XMLView.create({
                     viewName: "ferias1000.Main"
                 }).then(function (oView) {
-                    // Coloca a View direto na Shell/Body da página para renderizar tudo
                     oView.placeAt("content");
                 }).catch(function (oError) {
                     console.error("Erro interno ao renderizar a View XML:", oError);
                 });
-            }, function (oErr) {
-                console.error("Erro ao carregar a dependência da classe XMLView:", oErr);
             });
         });
     </script>
