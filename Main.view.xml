@@ -1,5 +1,5 @@
 <mvc:View
-    controllerName="ferias1000.controller.Main"
+    controllerName="ferias1000.Main"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core">
@@ -45,6 +45,130 @@
                         icon="{view>icon}" />
                 </List>
             </Panel>
+
+            <IconTabBar id="idIconTabBarNoIcons" expanded="true" class="sapUiResponsiveMargin">
+                <items>
+                    <IconTabFilter text="Documentos Pessoais" key="docs">
+                        <VBox class="sapUiSmallMargin">
+                            <Label text="Tipo de Documento (Ex: Passaporte, Visto)" design="Bold"/>
+                            <Input id="inputDocTipo" placeholder="Insira o tipo..."/>
+                            
+                            <Label text="Detalhes / Numeração" design="Bold" class="sapUiSmallMarginTop"/>
+                            <Input id="inputDocDet" placeholder="Insira o número ou detalhes..."/>
+                            
+                            <Label text="Data de Validade" design="Bold" class="sapUiSmallMarginTop"/>
+                            <DatePicker id="inputDocValidade" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy"/>
+                            
+                            <Label text="Anexar Foto/Cópia" design="Bold" class="sapUiSmallMarginTop"/>
+                            <FileUploader id="fileDocumento" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
+                            
+                            <Button text="Gravar Documento" press="onSalvarDocumento" type="Accept" class="sapUiSmallMarginTop"/>
+                            
+                            <Table items="{view>/documentos}" class="sapUiMediumMarginTop" noDataText="Nenhum documento guardado localmente.">
+                                <columns>
+                                    <Column><Text text="Tipo"/></Column>
+                                    <Column><Text text="Detalhe"/></Column>
+                                    <Column><Text text="Validade"/></Column>
+                                    <Column width="80px"><Text text="Ações"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{view>tipo}"/>
+                                            <Text text="{view>detalhe}"/>
+                                            <Text text="{view>validade}"/>
+                                            <HBox>
+                                                <Button icon="sap-icon://display" press="onVerItem" type="Transparent"/>
+                                                <Button icon="sap-icon://delete" press="onDeletarItem" type="Reject"/>
+                                            </HBox>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </VBox>
+                    </IconTabFilter>
+
+                    <IconTabFilter text="Hospedagem" key="hotel">
+                        <VBox class="sapUiSmallMargin">
+                            <Label text="Plataforma de Reserva" design="Bold"/>
+                            <Select id="selectPlataforma">
+                                <core:Item key="Booking" text="Booking.com"/>
+                                <core:Item key="Airbnb" text="Airbnb"/>
+                                <core:Item key="Hoteis" text="Hotéis.com"/>
+                                <core:Item key="Outro" text="Outro / Direto"/>
+                            </Select>
+                            
+                            <Label text="Nome do Hotel / Alojamento" design="Bold" class="sapUiSmallMarginTop"/>
+                            <Input id="inputReservaNome" placeholder="Ex: Hotel Copacabana Palace"/>
+                            
+                            <Label text="Data do Check-in" design="Bold" class="sapUiSmallMarginTop"/>
+                            <DatePicker id="inputCheckin" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy"/>
+                            
+                            <Label text="Anexar Comprovativo de Reserva" design="Bold" class="sapUiSmallMarginTop"/>
+                            <FileUploader id="fileReserva" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
+                            
+                            <Button text="Gravar Reserva" press="onSalvarReserva" type="Accept" class="sapUiSmallMarginTop"/>
+                            
+                            <Table items="{view>/reservas}" class="sapUiMediumMarginTop" noDataText="Nenhuma reserva guardada.">
+                                <columns>
+                                    <Column><Text text="Plataforma"/></Column>
+                                    <Column><Text text="Alojamento"/></Column>
+                                    <Column><Text text="Check-in"/></Column>
+                                    <Column width="80px"><Text text="Ações"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{view>tipo}"/>
+                                            <Text text="{view>nome}"/>
+                                            <Text text="{view>data}"/>
+                                            <HBox>
+                                                <Button icon="sap-icon://display" press="onVerItem" type="Transparent"/>
+                                                <Button icon="sap-icon://delete" press="onDeletarItem" type="Reject"/>
+                                            </HBox>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </VBox>
+                    </IconTabFilter>
+
+                    <IconTabFilter text="Passagens / Transporte" key="voos">
+                        <VBox class="sapUiSmallMargin">
+                            <Label text="Nome do Passageiro" design="Bold"/>
+                            <Input id="inputPassageiro" placeholder="Nome completo conforme documento"/>
+                            
+                            <Label text="Companhia / Código do Voo / Bilhete" design="Bold" class="sapUiSmallMarginTop"/>
+                            <Input id="inputVoo" placeholder="Ex: TAP - Voo TP123"/>
+                            
+                            <Label text="Anexar Cartão de Embarque / Bilhete" design="Bold" class="sapUiSmallMarginTop"/>
+                            <FileUploader id="filePassagem" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
+                            
+                            <Button text="Gravar Bilhete" press="onSalvarPassagem" type="Accept" class="sapUiSmallMarginTop"/>
+                            
+                            <Table items="{view>/passagens}" class="sapUiMediumMarginTop" noDataText="Nenhuma passagem anexada.">
+                                <columns>
+                                    <Column><Text text="Passageiro"/></Column>
+                                    <Column><Text text="Transporte / Voo"/></Column>
+                                    <Column width="80px"><Text text="Ações"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{view>passageiro}"/>
+                                            <Text text="{view>voo}"/>
+                                            <HBox>
+                                                <Button icon="sap-icon://display" press="onVerItem" type="Transparent"/>
+                                                <Button icon="sap-icon://delete" press="onDeletarItem" type="Reject"/>
+                                            </HBox>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </VBox>
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
         </content>
     </Page>
 </mvc:View>
