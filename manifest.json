@@ -5,7 +5,7 @@
     "type": "application",
     "title": "Férias 1000 - Explorador Global",
     "applicationVersion": {
-      "version": "1.0.2"
+      "version": "1.0.3"
     }
   },
   "sap.ui": {
@@ -30,9 +30,6 @@
         "sap.ui.core": {},
         "sap.ui.layout": {}
       }
-    },
-    "config": {
-      "fullWidth": true
     }
   }
 }
