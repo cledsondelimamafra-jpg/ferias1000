@@ -12,36 +12,26 @@
                         <VBox class="sapUiMediumMargin">
                             <Title text="Para onde vamos, Vovô?" level="H1" titleStyle="H1" class="sapUiSmallMarginBottom" />
                             
-                            <HBox alignment="Center" class="sapUiSmallMarginBottom">
+                            <HBox alignItems="Center" class="sapUiSmallMarginBottom">
                                 <Button id="btnMicrofone" text="Falar Destino" icon="sap-icon://microphone" type="Emphasized" press=".onIniciarComandoVoz" class="sapUiSmallMarginEnd"/>
                                 <Text id="txtStatusVoz" text="Clique no microfone para falar seu destino de viagem..." />
                             </HBox>
 
                             <l:Grid defaultSpan="XL6 L6 M12 S12" vSpacing="1" hSpacing="1">
                                 <VBox>
-                                    <Card class="sapUiSmallMarginBottom">
-                                        <header>
-                                            <CardHeader title="Informações do Destino" subtitle="Dados geográficos e clima local" iconSrc="sap-icon://hint" />
-                                        </header>
-                                        <content>
-                                            <VBox class="sapUiSmallMargin">
-                                                <HBox class="sapUiTinyMarginBottom"><Text text="Localidade: " fontWeight="Bold" class="sapUiTinyMarginEnd"/><Text text="{view>/local/cidade}" /></HBox>
-                                                <HBox class="sapUiTinyMarginBottom"><Text text="Coordenadas: " fontWeight="Bold" class="sapUiTinyMarginEnd"/><Text text="{view>/local/coordenadas}" /></HBox>
-                                                <HBox class="sapUiTinyMarginBottom"><Text text="Temperatura Estimada: " fontWeight="Bold" class="sapUiTinyMarginEnd"/><Text text="{view>/clima/temp}" /></HBox>
-                                            </VBox>
-                                        </content>
-                                    </Card>
+                                    <Panel headerText="Informações do Destino" class="sapUiSmallMarginBottom">
+                                        <VBox class="sapUiSmallMargin">
+                                            <HBox class="sapUiTinyMarginBottom"><Text text="Localidade: " fontWeight="Bold" class="sapUiTinyMarginEnd"/><Text text="{view>/local/cidade}" /></HBox>
+                                            <HBox class="sapUiTinyMarginBottom"><Text text="Coordenadas: " fontWeight="Bold" class="sapUiTinyMarginEnd"/><Text text="{view>/local/coordenadas}" /></HBox>
+                                            <HBox class="sapUiTinyMarginBottom"><Text text="Temperatura Estimada: " fontWeight="Bold" class="sapUiTinyMarginEnd"/><Text text="{view>/clima/temp}" /></HBox>
+                                        </VBox>
+                                    </Panel>
 
-                                    <Card>
-                                        <header>
-                                            <CardHeader title="Sugestões de Atividades" subtitle="O que fazer por lá" iconSrc="sap-icon://activities" />
-                                        </header>
-                                        <content>
-                                            <List items="{view>/lugares}">
-                                                <StandardListItem title="{view>name}" description="{view>category}" icon="{view>icon}" />
-                                            </List>
-                                        </content>
-                                    </Card>
+                                    <Panel headerText="Sugestões de Atividades">
+                                        <List items="{view>/lugares}">
+                                            <StandardListItem title="{view>name}" description="{view>category}" icon="{view>icon}" />
+                                        </List>
+                                    </Panel>
                                 </VBox>
 
                                 <VBox>
