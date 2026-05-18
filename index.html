@@ -19,10 +19,10 @@
     <script>
         sap.ui.getCore().attachInit(function () {
             sap.ui.require(["sap/ui/core/mvc/XMLView"], function (XMLView) {
-                // Como os arquivos estão soltos na raiz no GitHub, chamamos direto o nome do arquivo
                 XMLView.create({
                     viewName: "ferias1000.Main"
                 }).then(function (oView) {
+                    // Coloca a View direto na Shell/Body da página para renderizar tudo
                     oView.placeAt("content");
                 }).catch(function (oError) {
                     console.error("Erro interno ao renderizar a View XML:", oError);
@@ -34,8 +34,16 @@
     </script>
 
     <style>
-        html, body, #content { height: 100%; margin: 0; padding: 0; }
-        .sapUiBody { background-color: #f7f7f7; }
+        html, body { 
+            height: 100%; 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden;
+        }
+        #content {
+            height: 100%;
+            width: 100%;
+        }
     </style>
 </head>
 <body class="sapUiBody" id="content">
