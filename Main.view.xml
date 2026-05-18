@@ -2,7 +2,8 @@
     controllerName="ferias1000.Main"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:core="sap.ui.core">
+    xmlns:core="sap.ui.core"
+    xmlns:unified="sap.ui.unified">
 
     <Page title="Férias 1000 - Explorador Global">
         <content>
@@ -60,7 +61,7 @@
                             <DatePicker id="inputDocValidade" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy"/>
                             
                             <Label text="Anexar Foto/Cópia" design="Bold" class="sapUiSmallMarginTop"/>
-                            <FileUploader id="fileDocumento" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
+                            <unified:FileUploader id="fileDocumento" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
                             
                             <Button text="Gravar Documento" press="onSalvarDocumento" type="Accept" class="sapUiSmallMarginTop"/>
                             
@@ -105,7 +106,7 @@
                             <DatePicker id="inputCheckin" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy"/>
                             
                             <Label text="Anexar Comprovativo de Reserva" design="Bold" class="sapUiSmallMarginTop"/>
-                            <FileUploader id="fileReserva" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
+                            <unified:FileUploader id="fileReserva" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
                             
                             <Button text="Gravar Reserva" press="onSalvarReserva" type="Accept" class="sapUiSmallMarginTop"/>
                             
@@ -142,7 +143,7 @@
                             <Input id="inputVoo" placeholder="Ex: TAP - Voo TP123"/>
                             
                             <Label text="Anexar Cartão de Embarque / Bilhete" design="Bold" class="sapUiSmallMarginTop"/>
-                            <FileUploader id="filePassagem" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
+                            <unified:FileUploader id="filePassagem" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
                             
                             <Button text="Gravar Bilhete" press="onSalvarPassagem" type="Accept" class="sapUiSmallMarginTop"/>
                             
