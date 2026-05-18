@@ -1,157 +1,169 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageToast"
-], function (Controller, JSONModel, MessageToast) {
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
+], function (Controller, JSONModel, MessageToast, MessageBox) {
     "use strict";
 
-    return Controller.extend("ferias1000.Main", {
+    return Controller.extend("ferias1000.controller.Main", {
 
         onInit: function () {
-            var oModel = new JSONModel({
-                local: { cidade: "Aguardando destino...", coordenadas: "--, --" },
-                clima: { temp: "--" },
-                lugares: []
-            });
-            this.getView().setModel(oModel, "view");
-
-            this._oMapaInstance = null;
-            this._oMarcadorInstance = null;
+            const oData = {
+                clima: { temp: "--", desc: "Selecione no mapa" },
+                local: { cidade: "Aguardando clique...", pais: "" },
+                lugares: [],
+                documentos: this._carregarDocsLocalStorage(),
+                docSelecionado: {}
+            };
+            this.getView().setModel(new JSONModel(oData), "view");
+            this._tempFotoBase64 = "";
         },
 
         onAfterRendering: function () {
-            this._inicializarMapaLeaflet();
-        },
+            if (!this._map) {
+                const oMapDom = document.querySelector('[id$="map"]');
+                if (oMapDom) {
+                    this._map = L.map(oMapDom).setView([-15, -47], 4);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OSM'
+                    }).addTo(this._map);
 
-        _inicializarMapaLeaflet: function () {
-            if (typeof window.L === "undefined") {
-                setTimeout(this._inicializarMapaLeaflet.bind(this), 300);
-                return;
-            }
-            if (this._oMapaInstance) { return; }
-
-            var oContainerHtml = document.getElementById("mapa_container");
-            if (!oContainerHtml) {
-                setTimeout(this._inicializarMapaLeaflet.bind(this), 200);
-                return;
-            }
-
-            try {
-                this._oMapaInstance = window.L.map('mapa_container').setView([-14.2350, -51.9253], 4);
-                window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap'
-                }).addTo(this._oMapaInstance);
-
-                setTimeout(function() {
-                    if (this._oMapaInstance) { this._oMapaInstance.invalidateSize(); }
-                }.bind(this), 400);
-
-                var that = this;
-                this._oMapaInstance.on('click', function(e) {
-                    that._buscarDadosPorCoordenadas(e.latlng.lat, e.latlng.lng);
-                });
-            } catch (e) {
-                console.error("Erro ao iniciar o mapa: ", e);
-            }
-        },
-
-        onIniciarComandoVoz: function () {
-            var that = this;
-            var oBtnMic = this.getView().byId("btnMicrofone");
-            var oTxtStatus = this.getView().byId("txtStatusVoz");
-            
-            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                MessageToast.show("Reconhecimento de voz não suportado.");
-                return;
-            }
-
-            var recognition = new SpeechRecognition();
-            recognition.lang = 'pt-BR';
-            
-            recognition.onstart = function() {
-                if(oBtnMic) { oBtnMic.setType("Negative").setText("Ouvindo..."); }
-                if(oTxtStatus) { oTxtStatus.setText("Fale o destino agora..."); }
-            };
-
-            recognition.onerror = function() {
-                if(oBtnMic) { oBtnMic.setType("Emphasized").setText("Falar Destino"); }
-                if(oTxtStatus) { oTxtStatus.setText("Falha ao capturar áudio."); }
-            };
-
-            recognition.onresult = function(event) {
-                if(oBtnMic) { oBtnMic.setType("Emphasized").setText("Falar Destino"); }
-                var sTextoDitado = event.results[0][0].transcript;
-                if(oTxtStatus) { oTxtStatus.setText("Pesquisando: '" + sTextoDitado + "'"); }
-                
-                jQuery.ajax({
-                    url: "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(sTextoDitado) + "&limit=1",
-                    type: "GET",
-                    success: function (data) {
-                        if (data && data.length > 0) {
-                            var fLat = parseFloat(data[0].lat);
-                            var fLon = parseFloat(data[0].lon);
-                            var sNomeOficial = data[0].display_name.split(',')[0];
-                            that._atualizarDadosInterface(fLat, fLon, sNomeOficial);
-                        } else {
-                            MessageToast.show("Destino não encontrado.");
-                        }
-                    },
-                    error: function() {
-                        MessageToast.show("Erro ao conectar no servidor de mapas.");
-                    }
-                });
-            };
-            recognition.start();
-        },
-
-        _atualizarDadosInterface: function(fLat, fLon, sNomeLocal) {
-            var oViewModel = this.getView().getModel("view");
-            if (!oViewModel) { return; }
-
-            var iTempMock = (fLat > -23.5 && fLat < 23.5) ? Math.floor(Math.random() * (31 - 23)) + 23 : Math.floor(Math.random() * (22 - 14)) + 14;
-            
-            oViewModel.setProperty("/clima/temp", iTempMock + "°C");
-            oViewModel.setProperty("/local/cidade", sNomeLocal);
-            oViewModel.setProperty("/local/coordenadas", fLat.toFixed(4) + ", " + fLon.toFixed(4));
-            
-            oViewModel.setProperty("/lugares", [
-                { name: "Centro Histórico de " + sNomeLocal, category: "Pontos Turísticos", icon: "sap-icon://photo-vitae" },
-                { name: "Tour Gastronômico Local", category: "Restaurantes", icon: "sap-icon://badge" },
-                { name: "Feira de Artesanato", category: "Cultura Local", icon: "sap-icon://cart" }
-            ]);
-
-            if (this._oMapaInstance) {
-                try {
-                    this._oMapaInstance.setView([fLat, fLon], 12);
-                    if (this._oMarcadorInstance) {
-                        this._oMarcadorInstance.setLatLng([fLat, fLon]);
-                    } else {
-                        this._oMarcadorInstance = window.L.marker([fLat, fLon]).addTo(this._oMapaInstance);
-                    }
-                    this._oMarcadorInstance.bindPopup("<b>" + sNomeLocal + "</b>").openPopup();
-                } catch(err) {
-                    console.error("Erro ao mover mapa: ", err);
+                    this._map.on('click', (e) => {
+                        this._onMapClick(e.latlng.lat, e.latlng.lng);
+                    });
                 }
             }
         },
 
-        _buscarDadosPorCoordenadas: function(fLat, fLon) {
-            var that = this;
-            jQuery.ajax({
-                url: "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + fLat + "&lon=" + fLon,
-                type: "GET",
-                success: function(data) {
-                    var sLocal = "Destino Selecionado";
-                    if (data && data.address) {
-                        sLocal = data.address.city || data.address.town || data.address.village || data.address.state || "Ponto Customizado";
+        // --- LÓGICA DE EXPLORAÇÃO (MAPA/CLIMA/LUGARES) ---
+        _onMapClick: function (lat, lon) {
+            this._buscarCidade(lat, lon);
+            this._buscarClima(lat, lon);
+            this._buscarLugares(lat, lon);
+        },
+
+        _buscarCidade: function (lat, lon) {
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                .then(r => r.json()).then(d => {
+                    const local = d.address;
+                    this.getView().getModel("view").setProperty("/local/cidade", local.city || local.town || local.village || "Desconhecido");
+                    this.getView().getModel("view").setProperty("/local/pais", local.country);
+                });
+        },
+
+        _buscarClima: function (lat, lon) {
+            const key = "acc3120a7a5cdbff08e94710972ada23";
+            fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=pt_br&appid=${key}`)
+                .then(r => r.json()).then(d => {
+                    this.getView().getModel("view").setProperty("/clima/temp", Math.round(d.main.temp) + "°C");
+                    this.getView().getModel("view").setProperty("/clima/desc", d.weather[0].description);
+                });
+        },
+
+        _buscarLugares: function (lat, lon) {
+            const key = "5ae2e3f221c38a28845f05b64cf3101dbe3efa692c5b1d31e96dc24b";
+            const urlBase = "https://api.opentripmap.com/0.1/en/places";
+            fetch(`${urlBase}/radius?radius=15000&lon=${lon}&lat=${lat}&format=json&apikey=${key}`)
+                .then(r => r.json()).then(data => {
+                    const top = data.filter(i => i.name).sort((a, b) => b.rate - a.rate).slice(0, 6);
+                    const promessas = top.map(l => fetch(`${urlBase}/xid/${l.xid}?apikey=${key}`).then(r => r.json()));
+                    return Promise.all(promessas);
+                }).then(detalhes => {
+                    const formatados = detalhes.map(d => ({
+                        name: d.name,
+                        category: d.kinds ? d.kinds.split(',')[0].replace(/_/g, ' ') : "Turismo",
+                        image: d.preview ? d.preview.source : "https://images.unsplash.com/photo-1500835595327-8317d296a51d?w=200"
+                    }));
+                    this.getView().getModel("view").setProperty("/lugares", formatados);
+                });
+        },
+
+        // --- LÓGICA DA CARTEIRA DE DOCUMENTOS ---
+        onFileUpload: function (oEvent) {
+            const file = oEvent.getParameter("files")[0];
+            const reader = new FileReader();
+            reader.onload = (e) => { this._tempFotoBase64 = e.target.result; };
+            reader.readAsDataURL(file);
+        },
+
+        onSalvarDoc: function () {
+            const sTipo = this.byId("inputTipo").getValue();
+            const sValidade = this.byId("inputValidade").getValue();
+            const sValidadeRaw = this.byId("inputValidade").getDateValue();
+
+            if (!sTipo || !sValidade || !this._tempFotoBase64) {
+                MessageBox.error("Preencha o tipo, a validade e selecione uma foto.");
+                return;
+            }
+
+            const oStatus = this._calcularStatus(sValidadeRaw);
+            const oNovoDoc = {
+                id: Date.now(),
+                tipo: sTipo,
+                validade: sValidade,
+                validadeFormatada: new Date(sValidadeRaw).toLocaleDateString('pt-BR'),
+                foto: this._tempFotoBase64,
+                estado: oStatus.estado,
+                estadoColor: oStatus.color
+            };
+
+            const aDocs = this.getView().getModel("view").getProperty("/documentos");
+            aDocs.push(oNovoDoc);
+            this.getView().getModel("view").setProperty("/documentos", aDocs);
+            localStorage.setItem("ferias1000_docs", JSON.stringify(aDocs));
+
+            this._limparCamposDoc();
+            MessageToast.show("Documento arquivado!");
+        },
+
+        onVerDocumento: function (oEvent) {
+            const oDoc = oEvent.getSource().getBindingContext("view").getObject();
+            this.getView().getModel("view").setProperty("/docSelecionado", oDoc);
+
+            if (!this._oDocDialog) {
+                this._oDocDialog = new sap.m.Dialog({
+                    title: "{view>/docSelecionado/tipo}",
+                    content: [ new sap.m.Image({ src: "{view>/docSelecionado/foto}", width: "100%" }) ],
+                    beginButton: new sap.m.Button({ text: "Fechar", press: () => this._oDocDialog.close() })
+                });
+                this.getView().addDependent(this._oDocDialog);
+            }
+            this._oDocDialog.open();
+        },
+
+        onDeletarDoc: function (oEvent) {
+            const oItem = oEvent.getSource().getBindingContext("view").getObject();
+            MessageBox.confirm("Excluir este documento?", {
+                onClose: (sAction) => {
+                    if (sAction === "OK") {
+                        let aDocs = this.getView().getModel("view").getProperty("/documentos");
+                        aDocs = aDocs.filter(d => d.id !== oItem.id);
+                        this.getView().getModel("view").setProperty("/documentos", aDocs);
+                        localStorage.setItem("ferias1000_docs", JSON.stringify(aDocs));
                     }
-                    that._atualizarDadosInterface(fLat, fLon, sLocal);
-                },
-                error: function() {
-                    that._atualizarDadosInterface(fLat, fLon, "Ponto no Mapa");
                 }
             });
+        },
+
+        _calcularStatus: function (dValidade) {
+            const hoje = new Date();
+            const diff = Math.ceil((dValidade - hoje) / (1000 * 60 * 60 * 24));
+            if (diff < 0) return { estado: "Error", color: "#e30000" };
+            if (diff <= 90) return { estado: "Warning", color: "#ff8c00" };
+            return { estado: "Success", color: "#2b7d2b" };
+        },
+
+        _carregarDocsLocalStorage: function () {
+            const sData = localStorage.getItem("ferias1000_docs");
+            return sData ? JSON.parse(sData) : [];
+        },
+
+        _limparCamposDoc: function () {
+            this.byId("inputTipo").setValue("");
+            this.byId("inputValidade").setValue("");
+            this.byId("fileUploader").clear();
+            this._tempFotoBase64 = "";
         }
     });
 });
