@@ -9,7 +9,8 @@ sap.ui.define([
 ], function (Controller, JSONModel, MessageToast, MessageBox, Dialog, Button, Image) {
     "use strict";
 
-    return Controller.extend("ferias1000.controller.Main", {
+    // Correção de namespace para localizar o arquivo direto na raiz do repositório
+    return Controller.extend("ferias1000.Main", {
 
         onInit: function () {
             // Cria e injeta o JSONModel dinamicamente no escopo da View
