@@ -1,11 +1,11 @@
 {
   "_version": "1.58.0",
   "sap.app": {
-    "id": "ferias1000.v2",
+    "id": "ferias1000",
     "type": "application",
     "title": "Férias 1000 - Explorador Global",
     "applicationVersion": {
-      "version": "1.0.1"
+      "version": "1.0.2"
     }
   },
   "sap.ui": {
@@ -30,6 +30,9 @@
         "sap.ui.core": {},
         "sap.ui.layout": {}
       }
+    },
+    "config": {
+      "fullWidth": true
     }
   }
 }
