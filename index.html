@@ -18,8 +18,12 @@
     </script>
 
     <script>
-        sap.ui.getCore().attachInit(function () {
-            sap.ui.require(["sap/ui/core/mvc/XMLView"], function (XMLView) {
+        // Cledson: Inicialização moderna que substitui o attachInit legado
+        window['sap-ui-config'] = window['sap-ui-config'] || {};
+        
+        // Usamos o require nativo carregando o Core de forma assíncrona
+        sap.ui.require(["sap/ui/core/Core", "sap/ui/core/mvc/XMLView"], function (Core, XMLView) {
+            Core.ready().then(function () {
                 XMLView.create({
                     viewName: "ferias1000.Main"
                 }).then(function (oView) {
@@ -28,6 +32,8 @@
                     console.error("Erro interno ao renderizar a View XML:", oError);
                 });
             });
+        }, function (oErr) {
+            console.error("Erro ao carregar os módulos iniciais do SAPUI5:", oErr);
         });
     </script>
 
@@ -41,12 +47,13 @@
             height: 100% !important;
             width: 100% !important;
         }
-        /* Cledson, isto vai garantir que o container interno do mapa tenha sempre altura visível */
+        /* Força o container do mapa a ter o tamanho correto na tela */
         #mapa_container {
             height: 450px !important;
             width: 100% !important;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            background-color: #e5e3df;
         }
     </style>
 </head>
