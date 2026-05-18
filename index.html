@@ -6,6 +6,7 @@
     <title>Férias 1000 - Planejador de Destinos</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <style>
         html, body, #content {
@@ -28,25 +29,15 @@
         data-sap-ui-libs="sap.m, sap.ui.layout"
         data-sap-ui-compatVersion="edge"
         data-sap-ui-async="true"
-        data-sap-ui-resourceroots='{"ferias1000": "./"}'>
-    </script>
-
-    <script>
-        sap.ui.getCore().attachInit(function () {
-            sap.ui.require([
-                "sap/ui/core/ComponentContainer"
-            ], function (ComponentContainer) {
-                new ComponentContainer({
-                    name: "ferias1000",
-                    height: "100%",
-                    settings: {
-                        id: "ferias1000"
-                    }
-                }).placeAt("content");
-            });
-        });
+        data-sap-ui-resourceroots='{"ferias1000": "./"}'
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport">
     </script>
 </head>
 <body class="sapUiBody" id="content">
-    </body>
+    <div data-sap-ui-component 
+         data-name="ferias1000" 
+         data-id="container" 
+         data-settings='{"id" : "ferias1000"}'
+         style="height: 100%;"></div>
+</body>
 </html>
