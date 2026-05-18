@@ -18,22 +18,19 @@
     </script>
 
     <script>
-        // Cledson: Inicialização moderna que substitui o attachInit legado
-        window['sap-ui-config'] = window['sap-ui-config'] || {};
-        
-        // Usamos o require nativo carregando o Core de forma assíncrona
+        // Inicialização limpa e assíncrona padrão OpenUI5
         sap.ui.require(["sap/ui/core/Core", "sap/ui/core/mvc/XMLView"], function (Core, XMLView) {
+            "use strict";
+
             Core.ready().then(function () {
                 XMLView.create({
                     viewName: "ferias1000.Main"
                 }).then(function (oView) {
                     oView.placeAt("content");
                 }).catch(function (oError) {
-                    console.error("Erro interno ao renderizar a View XML:", oError);
+                    console.error("Erro ao criar a View XML:", oError);
                 });
             });
-        }, function (oErr) {
-            console.error("Erro ao carregar os módulos iniciais do SAPUI5:", oErr);
         });
     </script>
 
@@ -47,7 +44,7 @@
             height: 100% !important;
             width: 100% !important;
         }
-        /* Força o container do mapa a ter o tamanho correto na tela */
+        /* Garante que o container do mapa tenha tamanho físico na renderização */
         #mapa_container {
             height: 450px !important;
             width: 100% !important;
