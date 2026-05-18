@@ -1,9 +1,52 @@
-<script id="sap-ui-bootstrap"
-    src="https://sdk.openui5.org/resources/sap-ui-core.js"
-    data-sap-ui-theme="sap_horizon"
-    data-sap-ui-libs="sap.m, sap.ui.layout, sap.ui.core"
-    data-sap-ui-resourceroots='{"ferias1000": "./"}'
-    data-sap-ui-async="true"
-    data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
-    data-sap-ui-compatVersion="edge">
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Férias 1000 - Planejador de Destinos</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        html, body, #content {
+            height: 100% !important;
+            margin: 0;
+            padding: 0;
+        }
+        .mapaContainer {
+            width: 100% !important;
+            height: 400px !important;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+
+    <script id="sap-ui-bootstrap"
+        src="https://sdk.openui5.org/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-libs="sap.m, sap.ui.layout"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true"
+        data-sap-ui-resourceroots='{"ferias1000": "./"}'>
+    </script>
+
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ui.require([
+                "sap/ui/core/ComponentContainer"
+            ], function (ComponentContainer) {
+                new ComponentContainer({
+                    name: "ferias1000",
+                    height: "100%",
+                    settings: {
+                        id: "ferias1000"
+                    }
+                }).placeAt("content");
+            });
+        });
+    </script>
+</head>
+<body class="sapUiBody" id="content">
+    </body>
+</html>
