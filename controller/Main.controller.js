@@ -5,5 +5,25 @@ sap.ui.define([
 ], function (Controller, JSONModel, MessageToast) {
     "use strict";
 
-    return Controller.extend("ferias1000.Main", {
-// ... resto do seu código igualzinho
+    return Controller.extend("ferias1000.controller.Main", {
+        onInit: function () {
+            // Inicializa o modelo básico da aplicação
+            var oModel = new JSONModel({
+                local: {
+                    cidade: "Aguardando comando...",
+                    coordenadas: "- / -"
+                },
+                clima: {
+                    temp: "-- °C"
+                },
+                lugares: []
+            });
+            this.getView().setModel(oModel, "view");
+        },
+
+        onIniciarComandoVoz: function () {
+            MessageToast.show("Microfone ativado! Fale o seu destino.");
+            // O código de reconhecimento de voz entrará aqui
+        }
+    });
+});
