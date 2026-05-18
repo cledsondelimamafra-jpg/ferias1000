@@ -8,7 +8,7 @@ sap.ui.define([
             manifest: "json"
         },
         init: function () {
-            // Chama a função init do pai
+            // Chama a função init padrão do framework
             UIComponent.prototype.init.apply(this, arguments);
         }
     });
