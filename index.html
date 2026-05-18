@@ -12,9 +12,21 @@
         src="https://sdk.openui5.org/resources/sap-ui-core.js"
         data-sap-ui-theme="sap_horizon"
         data-sap-ui-resourceroots='{ "ferias1000": "./" }'
-        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
         data-sap-ui-compatVersion="edge"
         data-sap-ui-async="true">
+    </script>
+
+    <script>
+        // Inicialização direta da View sem depender de Component.js
+        sap.ui.getCore().attachInit(function () {
+            sap.ui.core.mvc.XMLView.create({
+                viewName: "ferias1000.view.Main"
+            }).then(function (oView) {
+                oView.placeAt("content");
+            }).catch(function (oError) {
+                console.error("Erro ao instanciar a View XML:", oError);
+            });
+        });
     </script>
 
     <style>
@@ -23,11 +35,5 @@
     </style>
 </head>
 <body class="sapUiBody" id="content">
-    <div data-sap-ui-component 
-         data-name="ferias1000" 
-         data-id="container" 
-         data-settings='{"id" : "ferias1000"}'
-         style="height: 100%">
-    </div>
-</body>
+    </body>
 </html>
