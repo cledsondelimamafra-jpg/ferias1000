@@ -17,11 +17,11 @@
     </script>
 
     <script>
-        // Cledson, aqui está a correção: Garantimos o carregamento do módulo da View antes de criar a instância
         sap.ui.getCore().attachInit(function () {
             sap.ui.require(["sap/ui/core/mvc/XMLView"], function (XMLView) {
+                // Como os arquivos estão soltos na raiz no GitHub, chamamos direto o nome do arquivo
                 XMLView.create({
-                    viewName: "ferias1000.view.Main"
+                    viewName: "ferias1000.Main"
                 }).then(function (oView) {
                     oView.placeAt("content");
                 }).catch(function (oError) {
