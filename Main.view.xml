@@ -3,56 +3,43 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:l="sap.ui.layout"
-    height="100%">
-    <Shell>
-        <App id="appFerias">
-            <pages>
-                <Page title="Férias 1000 - Planejador de Destinos">
-                    <content>
-                        <VBox class="sapUiMediumMargin">
-                            <Title text="Para onde vamos, Vovô?" level="H1" titleStyle="H1" class="sapUiSmallMarginBottom" />
-                            
-                            <HBox alignItems="Center" class="sapUiSmallMarginBottom">
-                                <Button id="btnMicrofone" text="Falar Destino" icon="sap-icon://microphone" type="Emphasized" press=".onIniciarComandoVoz" class="sapUiSmallMarginEnd"/>
-                                <Text id="txtStatusVoz" text="Clique no microfone para falar seu destino de viagem..." />
-                            </HBox>
+    displayBlock="true">
 
-                            <l:Grid defaultSpan="XL6 L6 M12 S12" vSpacing="1" hSpacing="1">
-                                <VBox>
-                                    <Panel headerText="Informações do Destino" class="sapUiSmallMarginBottom">
-                                        <VBox class="sapUiSmallMargin">
-                                            <HBox class="sapUiTinyMarginBottom">
-                                                <Text text="Localidade: " fontWeight="Bold" class="sapUiTinyMarginEnd"/>
-                                                <Text text="{view>/local/cidade}" />
-                                            </HBox>
-                                            <HBox class="sapUiTinyMarginBottom">
-                                                <Text text="Coordenadas: " fontWeight="Bold" class="sapUiTinyMarginEnd"/>
-                                                <Text text="{view>/local/coordenadas}" />
-                                            </HBox>
-                                            <HBox class="sapUiTinyMarginBottom">
-                                                <Text text="Temperatura Estimada: " fontWeight="Bold" class="sapUiTinyMarginEnd"/>
-                                                <Text text="{view>/clima/temp}" />
-                                            </HBox>
-                                        </VBox>
-                                    </Panel>
+    <App id="app">
+        <pages>
+            <Page id="page" title="Férias 1000 - Planejador de Destinos">
+                <content>
+                    <VBox class="sapUiResponsiveMargin" spacing="1">
+                        <Title text="Para onde vamos planejar a viagem?" titleStyle="H1" class="sapUiSmallMarginBottom" />
+                        
+                        <HBox alignItems="Center" class="sapUiSmallMarginBottom">
+                            <Button text="Falar Destino" icon="sap-icon://microphone" type="Emphasized" press=".onIniciarComandoVoz" />
+                            <Text text="Clique no microfone para falar seu destino de viagem..." class="sapUiSmallMarginBegin" />
+                        </HBox>
 
-                                    <Panel headerText="Sugestões de Atividades">
-                                        <List items="{view>/lugares}">
-                                            <StandardListItem title="{view>name}" description="{view>category}" icon="{view>icon}" />
-                                        </List>
-                                    </Panel>
+                        <l:Grid defaultSpan="XL6 L6 M12 S12" vSpacing="1">
+                            <Panel headerText="Informações do Destino" expandable="false">
+                                <VBox spacing="1">
+                                    <HBox><Text text="Localidade: " bold="true"/><Text text="{view>/local/cidade}" class="sapUiSmallMarginBegin"/></HBox>
+                                    <HBox><Text text="Coordenadas: " bold="true"/><Text text="{view>/local/coordenadas}" class="sapUiSmallMarginBegin"/></HBox>
+                                    <HBox><Text text="Temperatura Estimada: " bold="true"/><Text text="{view>/clima/temp}" class="sapUiSmallMarginBegin"/></HBox>
                                 </VBox>
+                            </Panel>
 
-                                <VBox>
-                                    <Panel headerText="Visualização do Mapa">
-                                        <html:div xmlns:html="http://www.w3.org/1999/xhtml" id="mapa_container" class="mapaContainer"></html:div>
-                                    </Panel>
-                                </VBox>
-                            </l:Grid>
-                        </VBox>
-                    </content>
-                </Page>
-            </pages>
-        </App>
-    </Shell>
+                            <Panel headerText="Visualização do Mapa" expandable="false">
+                                <core:HTML xmlns:core="sap.ui.core" content='&lt;div id="mapaDestino" class="mapaContainer"&gt;&lt;/div&gt;' />
+                            </Panel>
+                        </l:Grid>
+
+                        <Panel headerText="Sugestões de Atividades" class="sapUiSmallMarginTop">
+                            <List items="{view>/lugares}" noDataText="Aguardando a definição do destino...">
+                                <StandardListItem title="{view>nome}" description="{view>categoria}" />
+                            </List>
+                        </Panel>
+
+                    </VBox>
+                </content>
+            </Page>
+        </pages>
+    </App>
 </mvc:View>
