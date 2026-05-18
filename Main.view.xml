@@ -2,177 +2,58 @@
     controllerName="ferias1000.Main"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:core="sap.ui.core"
-    xmlns:unified="sap.ui.unified">
+    xmlns:l="sap.ui.layout"
+    height="100%">
+    <Shell>
+        <App id="appFerias">
+            <pages>
+                <Page title="Férias 1000 - Planejador de Destinos">
+                    <content>
+                        <VBox class="sapUiMediumMargin">
+                            <Title text="Para onde vamos, Vovô?" level="H1" titleStyle="H1" class="sapUiSmallMarginBottom" />
+                            
+                            <HBox alignment="Center" class="sapUiSmallMarginBottom">
+                                <Button id="btnMicrofone" text="Falar Destino" icon="sap-icon://microphone" type="Emphasized" press=".onIniciarComandoVoz" class="sapUiSmallMarginEnd"/>
+                                <Text id="txtStatusVoz" text="Clique no microfone para falar seu destino de viagem..." />
+                            </HBox>
 
-    <Page title="Férias 1000 - Explorador Global" enableScrolling="true">
-        <content>
-            <VBox class="sapUiSmallMargin">
-                
-                <Panel headerText="Busca por Comando de Voz" expandable="false" class="sapUiTinyMarginBottom">
-                    <HBox alignItems="Center">
-                        <Button id="btnMicrofone" text="Falar Destino" icon="sap-icon://microphone" press="onIniciarComandoVoz" type="Emphasized" class="sapUiSmallMarginEnd"/>
-                        <Text id="txtStatusVoz" text="Clique no botão e diga uma Cidade, Estado ou País."/>
-                    </HBox>
-                </Panel>
+                            <l:Grid defaultSpan="XL6 L6 M12 S12" vSpacing="1" hSpacing="1">
+                                <VBox>
+                                    <Card class="sapUiSmallMarginBottom">
+                                        <header>
+                                            <CardHeader title="Informações do Destino" subtitle="Dados geográficos e clima local" iconSrc="sap-icon://hint" />
+                                        </header>
+                                        <content>
+                                            <VBox class="sapUiSmallMargin">
+                                                <HBox class="sapUiTinyMarginBottom"><Text text="Localidade: " fontWeight="Bold" class="sapUiTinyMarginEnd"/><Text text="{view>/local/cidade}" /></HBox>
+                                                <HBox class="sapUiTinyMarginBottom"><Text text="Coordenadas: " fontWeight="Bold" class="sapUiTinyMarginEnd"/><Text text="{view>/local/coordenadas}" /></HBox>
+                                                <HBox class="sapUiTinyMarginBottom"><Text text="Temperatura Estimada: " fontWeight="Bold" class="sapUiTinyMarginEnd"/><Text text="{view>/clima/temp}" /></HBox>
+                                            </VBox>
+                                        </content>
+                                    </Card>
 
-                <Panel headerText="Mapa Explorador" expandable="false" class="sapUiTinyMarginBottom">
-                    <core:HTML id="htmlMapa" content="&lt;div id='mapa_container'&gt;&lt;/div&gt;"/>
-                </Panel>
+                                    <Card>
+                                        <header>
+                                            <CardHeader title="Sugestões de Atividades" subtitle="O que fazer por lá" iconSrc="sap-icon://activities" />
+                                        </header>
+                                        <content>
+                                            <List items="{view>/lugares}">
+                                                <StandardListItem title="{view>name}" description="{view>category}" icon="{view>icon}" />
+                                            </List>
+                                        </content>
+                                    </Card>
+                                </VBox>
 
-                <Panel headerText="Informações do Destino" expandable="false" class="sapUiTinyMarginBottom">
-                    <HBox width="100%" justifyContent="SpaceAround" class="sapUiSmallMarginBottom">
-                        <VBox alignItems="Center">
-                            <core:Icon src="sap-icon://map-2" size="2rem" class="sapUiTinyMarginBottom"/>
-                            <Label text="Local Localizado" design="Bold"/>
-                            <Text text="{view>/local/cidade}"/>
+                                <VBox>
+                                    <Panel headerText="Visualização do Mapa" height="100%">
+                                        <html:div xmlns:html="http://www.w3.org/1999/xhtml" id="mapa_container" class="mapaContainer"></html:div>
+                                    </Panel>
+                                </VBox>
+                            </l:Grid>
                         </VBox>
-                        <VBox alignItems="Center">
-                            <core:Icon src="sap-icon://temperature" size="2rem" class="sapUiTinyMarginBottom"/>
-                            <Label text="Clima Estimado" design="Bold"/>
-                            <Text text="{view>/clima/temp}"/>
-                        </VBox>
-                        <VBox alignItems="Center">
-                            <core:Icon src="sap-icon://latlong" size="2rem" class="sapUiTinyMarginBottom"/>
-                            <Label text="Coordenadas" design="Bold"/>
-                            <Text text="{view>/local/coordenadas}"/>
-                        </VBox>
-                    </HBox>
-                </Panel>
-
-                <Panel headerText="Sugestões de Roteiro para o Destino" expandable="false" class="sapUiTinyMarginBottom">
-                    <List items="{view>/lugares}" noDataText="Nenhum destino selecionado ou aguardando comando...">
-                        <StandardListItem 
-                            title="{view>name}" 
-                            description="{view>category}" 
-                            icon="{view>icon}" />
-                    </List>
-                </Panel>
-
-                <IconTabBar id="idIconTabBarNoIcons" expanded="true" class="sapUiTinyMarginTop">
-                    <items>
-                        <IconTabFilter text="Documentos Pessoais" key="docs">
-                            <VBox class="sapUiSmallMargin">
-                                <Label text="Tipo de Documento (Ex: Passaporte, Visto)" design="Bold"/>
-                                <Input id="inputDocTipo" placeholder="Insira o tipo..."/>
-                                
-                                <Label text="Detalhes / Numeração" design="Bold" class="sapUiSmallMarginTop"/>
-                                <Input id="inputDocDet" placeholder="Insira o número ou detalhes..."/>
-                                
-                                <Label text="Data de Validade" design="Bold" class="sapUiSmallMarginTop"/>
-                                <DatePicker id="inputDocValidade" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy"/>
-                                
-                                <Label text="Anexar Foto/Cópia" design="Bold" class="sapUiSmallMarginTop"/>
-                                <unified:FileUploader id="fileDocumento" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
-                                
-                                <Button text="Gravar Documento" press="onSalvarDocumento" type="Accept" class="sapUiSmallMarginTop"/>
-                                
-                                <Table items="{view>/documentos}" class="sapUiMediumMarginTop" noDataText="Nenhum documento guardado localmente.">
-                                    <columns>
-                                        <Column><Text text="Tipo"/></Column>
-                                        <Column><Text text="Detalhe"/></Column>
-                                        <Column><Text text="Validade"/></Column>
-                                        <Column width="80px"><Text text="Ações"/></Column>
-                                    </columns>
-                                    <items>
-                                        <ColumnListItem>
-                                            <cells>
-                                                <Text text="{view>tipo}"/>
-                                                <Text text="{view>detalhe}"/>
-                                                <Text text="{view>validade}"/>
-                                                <HBox>
-                                                    <Button icon="sap-icon://display" press="onVerItem" type="Transparent"/>
-                                                    <Button icon="sap-icon://delete" press="onDeletarItem" type="Reject"/>
-                                                </HBox>
-                                            </cells>
-                                        </ColumnListItem>
-                                    </items>
-                                </Table>
-                            </VBox>
-                        </IconTabFilter>
-
-                        <IconTabFilter text="Hospedagem" key="hotel">
-                            <VBox class="sapUiSmallMargin">
-                                <Label text="Plataforma de Reserva" design="Bold"/>
-                                <Select id="selectPlataforma">
-                                    <core:Item key="Booking" text="Booking.com"/>
-                                    <core:Item key="Airbnb" text="Airbnb"/>
-                                    <core:Item key="Hoteis" text="Hotéis.com"/>
-                                    <core:Item key="Outro" text="Outro / Direto"/>
-                                </Select>
-                                
-                                <Label text="Nome do Hotel / Alojamento" design="Bold" class="sapUiSmallMarginTop"/>
-                                <Input id="inputReservaNome" placeholder="Ex: Hotel Copacabana Palace"/>
-                                
-                                <Label text="Data do Check-in" design="Bold" class="sapUiSmallMarginTop"/>
-                                <DatePicker id="inputCheckin" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy"/>
-                                
-                                <Label text="Anexar Comprovativo de Reserva" design="Bold" class="sapUiSmallMarginTop"/>
-                                <unified:FileUploader id="fileReserva" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
-                                
-                                <Button text="Gravar Reserva" press="onSalvarReserva" type="Accept" class="sapUiSmallMarginTop"/>
-                                
-                                <Table items="{view>/reservas}" class="sapUiMediumMarginTop" noDataText="Nenhuma reserva guardada.">
-                                    <columns>
-                                        <Column><Text text="Plataforma"/></Column>
-                                        <Column><Text text="Alojamento"/></Column>
-                                        <Column><Text text="Check-in"/></Column>
-                                        <Column width="80px"><Text text="Ações"/></Column>
-                                    </columns>
-                                    <items>
-                                        <ColumnListItem>
-                                            <cells>
-                                                <Text text="{view>tipo}"/>
-                                                <Text text="{view>nome}"/>
-                                                <Text text="{view>data}"/>
-                                                <HBox>
-                                                    <Button icon="sap-icon://display" press="onVerItem" type="Transparent"/>
-                                                    <Button icon="sap-icon://delete" press="onDeletarItem" type="Reject"/>
-                                                </HBox>
-                                            </cells>
-                                        </ColumnListItem>
-                                    </items>
-                                </Table>
-                            </VBox>
-                        </IconTabFilter>
-
-                        <IconTabFilter text="Passagens / Transporte" key="voos">
-                            <VBox class="sapUiSmallMargin">
-                                <Label text="Nome do Passageiro" design="Bold"/>
-                                <Input id="inputPassageiro" placeholder="Nome completo conforme documento"/>
-                                
-                                <Label text="Companhia / Código do Voo / Bilhete" design="Bold" class="sapUiSmallMarginTop"/>
-                                <Input id="inputVoo" placeholder="Ex: TAP - Voo TP123"/>
-                                
-                                <Label text="Anexar Cartão de Embarque / Bilhete" design="Bold" class="sapUiSmallMarginTop"/>
-                                <unified:FileUploader id="filePassagem" change="onFileChange" fileType="png,jpg,jpeg" buttonText="Escolher Ficheiro"/>
-                                
-                                <Button text="Gravar Bilhete" press="onSalvarPassagem" type="Accept" class="sapUiSmallMarginTop"/>
-                                
-                                <Table items="{view>/passagens}" class="sapUiMediumMarginTop" noDataText="Nenhuma passagem anexada.">
-                                    <columns>
-                                        <Column><Text text="Passageiro"/></Column>
-                                        <Column><Text text="Transporte / Voo"/></Column>
-                                        <Column width="80px"><Text text="Ações"/></Column>
-                                    </columns>
-                                    <items>
-                                        <ColumnListItem>
-                                            <cells>
-                                                <Text text="{view>passageiro}"/>
-                                                <Text text="{view>voo}"/>
-                                                <HBox>
-                                                    <Button icon="sap-icon://display" press="onVerItem" type="Transparent"/>
-                                                    <Button icon="sap-icon://delete" press="onDeletarItem" type="Reject"/>
-                                                </HBox>
-                                            </cells>
-                                        </ColumnListItem>
-                                    </items>
-                                </Table>
-                            </VBox>
-                        </IconTabFilter>
-                    </items>
-                </IconTabBar>
-            </VBox>
-        </content>
-    </Page>
+                    </content>
+                </Page>
+            </pages>
+        </App>
+    </Shell>
 </mvc:View>
