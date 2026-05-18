@@ -1,35 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Férias 1000 - Explorador Global</title>
-    
-    <script id="sap-ui-bootstrap"
-        src="https://sdk.openui5.org/resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_horizon"
-        data-sap-ui-libs="sap.m, sap.ui.layout, sap.ui.core"
-        data-sap-ui-resourceroots='{"ferias1000": "./"}'
-        data-sap-ui-async="true"
-        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
-        data-sap-ui-compatVersion="edge">
-    </script>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <script id="sap-ui-bootstrap"
+        src="https://sdk.openui5.org/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-resourceroots='{ "ferias1000": "./" }'
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true">
+    </script>
+
     <style>
-        html, body, #content { 
-            height: 100%; 
-            margin: 0; 
-            padding: 0; 
-        }
-        .mapaContainer { 
-            height: 400px; 
-            width: 100%; 
-            border: 1px solid #ccc; 
-            border-radius: 8px; 
-            margin-top: 15px; 
-        }
+        html, body, #content { height: 100%; margin: 0; padding: 0; }
+        .sapUiBody { background-color: #f7f7f7; }
     </style>
 </head>
 <body class="sapUiBody" id="content">
@@ -37,6 +27,7 @@
          data-name="ferias1000" 
          data-id="container" 
          data-settings='{"id" : "ferias1000"}'
-         style="height: 100%;"></div>
+         style="height: 100%">
+    </div>
 </body>
 </html>
