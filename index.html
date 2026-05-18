@@ -17,14 +17,18 @@
     </script>
 
     <script>
-        // Inicialização direta da View sem depender de Component.js
+        // Cledson, aqui está a correção: Garantimos o carregamento do módulo da View antes de criar a instância
         sap.ui.getCore().attachInit(function () {
-            sap.ui.core.mvc.XMLView.create({
-                viewName: "ferias1000.view.Main"
-            }).then(function (oView) {
-                oView.placeAt("content");
-            }).catch(function (oError) {
-                console.error("Erro ao instanciar a View XML:", oError);
+            sap.ui.require(["sap/ui/core/mvc/XMLView"], function (XMLView) {
+                XMLView.create({
+                    viewName: "ferias1000.view.Main"
+                }).then(function (oView) {
+                    oView.placeAt("content");
+                }).catch(function (oError) {
+                    console.error("Erro interno ao renderizar a View XML:", oError);
+                });
+            }, function (oErr) {
+                console.error("Erro ao carregar a dependência da classe XMLView:", oErr);
             });
         });
     </script>
