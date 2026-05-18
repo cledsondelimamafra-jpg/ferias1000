@@ -1,0 +1,50 @@
+<mvc:View
+    controllerName="ferias1000.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <Page title="Férias 1000 - Explorador Global">
+        <content>
+            <Panel headerText="Busca por Comando de Voz" class="sapUiResponsiveMargin">
+                <HBox alignItems="Center">
+                    <Button id="btnMicrofone" text="Falar Destino" icon="sap-icon://microphone" press="onIniciarComandoVoz" type="Emphasized" class="sapUiSmallMarginEnd"/>
+                    <Text id="txtStatusVoz" text="Clique no botão e diga uma Cidade, Estado ou País."/>
+                </HBox>
+            </Panel>
+
+            <Panel headerText="Mapa Explorador" class="sapUiResponsiveMargin">
+                <core:HTML id="htmlMapa" content="&lt;div id='mapa_container' style='height:400px; width:100%; position:relative; background:#e5e3df;'&gt;&lt;/div&gt;"/>
+            </Panel>
+
+            <Panel headerText="Informações do Destino" class="sapUiResponsiveMargin">
+                <HBox width="100%" justifyContent="SpaceAround" class="sapUiSmallMarginBottom">
+                    <VBox alignItems="Center">
+                        <core:Icon src="sap-icon://map-2" size="2rem" class="sapUiTinyMarginBottom"/>
+                        <Label text="Local Localizado" design="Bold"/>
+                        <Text text="{view>/local/cidade}"/>
+                    </VBox>
+                    <VBox alignItems="Center">
+                        <core:Icon src="sap-icon://temperature" size="2rem" class="sapUiTinyMarginBottom"/>
+                        <Label text="Clima Estimado" design="Bold"/>
+                        <Text text="{view>/clima/temp}"/>
+                    </VBox>
+                    <VBox alignItems="Center">
+                        <core:Icon src="sap-icon://latlong" size="2rem" class="sapUiTinyMarginBottom"/>
+                        <Label text="Coordenadas" design="Bold"/>
+                        <Text text="{view>/local/coordenadas}"/>
+                    </VBox>
+                </HBox>
+            </Panel>
+
+            <Panel headerText="Sugestões de Roteiro para o Destino" class="sapUiResponsiveMargin">
+                <List items="{view>/lugares}" noDataText="Nenhum destino selecionado ou aguardando comando...">
+                    <StandardListItem 
+                        title="{view>name}" 
+                        description="{view>category}" 
+                        icon="{view>icon}" />
+                </List>
+            </Panel>
+        </content>
+    </Page>
+</mvc:View>
