@@ -9,7 +9,7 @@
         <pages>
             <Page id="page" title="Férias 1000 - Travel Assistant">
                 <content>
-                    <IconTabBar id="idIconTabBar" class="sapUiSmallMarginBottom">
+                    <IconTabBar id="idIconTabBar" class="sapUiSmallMarginBottom" select="onTabSelect">
                         <items>
                             <IconTabFilter icon="sap-icon://world" text="Explorar" key="explorar" />
                             <IconTabFilter icon="sap-icon://attachment" text="Documentos" key="documentos" />
@@ -19,7 +19,7 @@
                         </items>
                     </IconTabBar>
 
-                    <VBox class="sapUiResponsiveMargin">
+                    <VBox id="panelExplorar" visible="true" class="sapUiResponsiveMargin">
                         <Title text="Busca por Comando de Voz" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
                         <HBox alignItems="Center" class="sapUiSmallMarginBottom">
                             <Button text="Falar Destino" icon="sap-icon://microphone" type="Emphasized" press="onFalarDestino" class="sapUiSmallMarginEnd" />
@@ -46,13 +46,58 @@
                         
                         <core:HTML 
                             id="map" 
-                            content='&lt;div id="map" style="width: 100%; height: 450px; border-radius: 8px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 1;"&gt;&lt;/div&gt;'>
+                            content='&lt;div id="map" style="width: 100%; height: 400px; border-radius: 8px; border: 1px solid #ccc; z-index: 1;"&gt;&lt;/div&gt;'>
                         </core:HTML>
 
-                        <VBox visible="{= ${view>/lugares}.length === 0 }" class="sapUiMediumMarginTop" alignItems="Center">
-                            <Text text="Sem dados para a tabela de destinos adicionais." color="Light" />
-                        </VBox>
+                        <Table items="{view>/lugares}" class="sapUiMediumMarginTop">
+                            <columns>
+                                <Column><Text text="Ponto Turístico" design="Bold" /></Column>
+                                <Column><Text text="Descrição Histórica" design="Bold" /></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{view>nome}" />
+                                        <Text text="{view>desc}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
                     </VBox>
+
+                    <VBox id="panelDocumentos" visible="false" class="sapUiResponsiveMargin">
+                        <Title text="Meus Documentos de Viagem" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
+                        <Table items="{view>/documentos}">
+                            <columns>
+                                <Column><Text text="Tipo de Documento" design="Bold" /></Column>
+                                <Column><Text text="Status / Validade" design="Bold" /></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{view>tipo}" />
+                                        <Text text="{view>status}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </VBox>
+
+                    <VBox id="panelReservas" visible="false" class="sapUiResponsiveMargin">
+                        <Title text="Minhas Reservas de Hospedagem" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
+                        <Text text="Nenhuma reserva ativa cadastrada para esta viagem." />
+                    </VBox>
+
+                    <VBox id="panelPassagens" visible="false" class="sapUiResponsiveMargin">
+                        <Title text="Passagens Aéreas / Bilhetes" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
+                        <Text text="Seus bilhetes e passagens aparecerão aqui." />
+                    </VBox>
+
+                    <VBox id="panelManual" visible="false" class="sapUiResponsiveMargin">
+                        <Title text="Manual do Assistente de Viagem" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
+                        <Text text="1. Clique em 'Falar Destino' para pesquisar usando o microfone.\n2. Veja os pontos turísticos locais e o clima em tempo real mudarem automaticamente." />
+                    </VBox>
+
                 </content>
             </Page>
         </pages>
