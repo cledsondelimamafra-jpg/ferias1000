@@ -1,17 +1,6 @@
-{
-  "short_name": "Férias 1000",
-  "name": "Férias 1000 - Travel Assistant",
-  "icons": [
-    {
-      "src": "17788842964068654892709567914732.jpg",
-      "type": "image/jpeg",
-      "sizes": "512x512",
-      "purpose": "any maskable"
-    }
-  ],
-  "start_url": "/index.html",
-  "background_color": "#ffffff",
-  "theme_color": "#346191",
-  "display": "standalone",
-  "orientation": "portrait"
+"rootView": {
+    "viewName": "ferias1000.view.Main",
+    "type": "XML",
+    "async": true,
+    "id": "Main"
 }
