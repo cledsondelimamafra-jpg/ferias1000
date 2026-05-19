@@ -72,14 +72,16 @@
                                 <OverflowToolbar>
                                     <Title text="Meus Documentos de Viagem" level="H2" titleStyle="H4" />
                                     <ToolbarSpacer />
+                                    <Button text="Salvar" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
                                     <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarDocumento" />
                                     <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirDocumento" />
                                 </OverflowToolbar>
                             </headerToolbar>
                             <columns>
-                                <Column width="40%"><Label text="Tipo de Documento" design="Bold" /></Column>
-                                <Column width="30%"><Label text="Validade / Info" design="Bold" /></Column>
+                                <Column width="35%"><Label text="Tipo de Documento" design="Bold" /></Column>
+                                <Column width="25%"><Label text="Validade / Info" design="Bold" /></Column>
                                 <Column width="30%"><Label text="Anexar Arquivo (PDF/Imagem)" design="Bold" /></Column>
+                                <Column width="10%" hAlign="Center"><Label text="Ver" design="Bold" /></Column>
                             </columns>
                             <items>
                                 <ColumnListItem>
@@ -91,6 +93,7 @@
                                             value="{view>arquivoNome}"
                                             change="onUploadArquivo"
                                             width="100%" />
+                                        <Button icon="sap-icon://display" type="Transparent" tooltip="Visualizar Documento" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -103,14 +106,16 @@
                                 <OverflowToolbar>
                                     <Title text="Minhas Reservas de Hospedagem" level="H2" titleStyle="H4" />
                                     <ToolbarSpacer />
+                                    <Button text="Salvar" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
                                     <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarReserva" />
                                     <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirReserva" />
                                 </OverflowToolbar>
                             </headerToolbar>
                             <columns>
-                                <Column width="40%"><Label text="Hospedagem / Hotel" design="Bold" /></Column>
-                                <Column width="30%"><Label text="Período" design="Bold" /></Column>
+                                <Column width="35%"><Label text="Hospedagem / Hotel" design="Bold" /></Column>
+                                <Column width="25%"><Label text="Período" design="Bold" /></Column>
                                 <Column width="30%"><Label text="Voucher / Comprovante" design="Bold" /></Column>
+                                <Column width="10%" hAlign="Center"><Label text="Ver" design="Bold" /></Column>
                             </columns>
                             <items>
                                 <ColumnListItem>
@@ -122,6 +127,7 @@
                                             value="{view>arquivoNome}"
                                             change="onUploadArquivo"
                                             width="100%" />
+                                        <Button icon="sap-icon://display" type="Transparent" tooltip="Visualizar Voucher" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -134,14 +140,16 @@
                                 <OverflowToolbar>
                                     <Title text="Passagens Aéreas / Bilhetes" level="H2" titleStyle="H4" />
                                     <ToolbarSpacer />
+                                    <Button text="Salvar" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
                                     <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarPassagem" />
                                     <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirPassagem" />
                                 </OverflowToolbar>
                             </headerToolbar>
                             <columns>
-                                <Column width="40%"><Label text="Voo / Companhia" design="Bold" /></Column>
-                                <Column width="30%"><Label text="Assento / Horário" design="Bold" /></Column>
+                                <Column width="35%"><Label text="Voo / Companhia" design="Bold" /></Column>
+                                <Column width="25%"><Label text="Assento / Horário" design="Bold" /></Column>
                                 <Column width="30%"><Label text="Bilhete Eletrônico" design="Bold" /></Column>
+                                <Column width="10%" hAlign="Center"><Label text="Ver" design="Bold" /></Column>
                             </columns>
                             <items>
                                 <ColumnListItem>
@@ -153,6 +161,7 @@
                                             value="{view>arquivoNome}"
                                             change="onUploadArquivo"
                                             width="100%" />
+                                        <Button icon="sap-icon://display" type="Transparent" tooltip="Visualizar Bilhete" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -161,7 +170,7 @@
 
                     <VBox id="panelManual" visible="false" class="sapUiResponsiveMargin">
                         <Title text="Manual do Assistente de Viagem" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                        <FormattedText htmlText="&lt;p&gt;&lt;strong&gt;1. Inteligência Geográfica Reais:&lt;/strong&gt; O sistema não usa mais dados estáticos! Qualquer cidade do mundo dita no comando de voz consultará os servidores do OpenStreetMap trazendo os 7 pontos turísticos mais relevantes mapeados no local.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;2. Upload de Arquivos:&lt;/strong&gt; Clique em 'Incluir' para abrir uma linha e use o botão de busca para carregar PDFs ou imagens das suas passagens, vouchers e documentos diretamente no App.&lt;/p&gt;" />
+                        <FormattedText htmlText="&lt;p&gt;&lt;strong&gt;1. Salvamento Seguro:&lt;/strong&gt; Ao preencher os dados de documentos, reservas ou passagens, lembre-se de clicar no botão &lt;em&gt;Salvar&lt;/em&gt; de cada aba para fixar as informações no seu navegador.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;2. Visualização Dinâmica:&lt;/strong&gt; Sempre que anexar um arquivo válido e salvar, o botão de visualização (ícone de olho) ficará ativo. Ao clicar nele, o documento original abrirá instantaneamente em uma nova aba.&lt;/p&gt;" />
                     </VBox>
 
                 </content>
