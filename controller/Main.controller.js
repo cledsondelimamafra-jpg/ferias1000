@@ -1,15 +1,37 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/model/json/JSONModel"
-], function (Controller, JSONModel) {
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageToast"
+], function (Controller, JSONModel, MessageToast) {
     "use strict";
 
     return Controller.extend("ferias1000.controller.Main", {
         onInit: function () {
-            var oModel = new JSONModel({
-                documentos: JSON.parse(localStorage.getItem("ferias1000_documentos") || "[]")
-            });
-            this.getView().setModel(oModel, "view");
+            var oData = {
+                documentos: JSON.parse(localStorage.getItem("ferias1000_documentos") || "[]"),
+                local: { cidade: "Aguardando...", statusVoz: "Aguardando..." }
+            };
+            this.getView().setModel(new JSONModel(oData), "view");
+
+            // Reconhecimento de Voz
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                this._oRecognition = new SpeechRecognition();
+                this._oRecognition.lang = 'pt-BR';
+                this._oRecognition.onresult = function(event) {
+                    var sCidade = event.results[0][0].transcript;
+                    this.getView().getModel("view").setProperty("/local/cidade", sCidade);
+                    this.getView().getModel("view").setProperty("/local/statusVoz", "Cidade: " + sCidade);
+                    // Aqui entra a lógica do mapa que você já tinha
+                }.bind(this);
+            }
+        },
+
+        onFalarDestino: function() {
+            if (this._oRecognition) {
+                this._oRecognition.start();
+                this.getView().getModel("view").setProperty("/local/statusVoz", "Ouvindo...");
+            }
         },
 
         onAfterRendering: function () {
@@ -29,7 +51,7 @@ sap.ui.define([
         onSalvarDocumentos: function () {
             var aDocs = this.getView().getModel("view").getProperty("/documentos");
             localStorage.setItem("ferias1000_documentos", JSON.stringify(aDocs));
-            sap.m.MessageToast.show("Documentos salvos!");
+            MessageToast.show("Documentos salvos!");
         },
 
         onAdicionarDocumento: function () {
