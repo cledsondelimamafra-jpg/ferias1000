@@ -290,11 +290,15 @@ sap.ui.define([
             });
         },
 
+        // ==========================================
+        // ENTRADA DE COMANDO DE VOZ INTEGRADA
+        // ==========================================
         onIniciarComandoVoz: function () {
             var oView = this.getView();
             var oBtnMic = oView.byId("btnMicrofone");
             var oTxtStatus = oView.byId("txtStatusVoz");
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            var that = this;
             
             if (!SpeechRecognition) {
                 MessageToast.show("API de Voz inacessível.");
@@ -303,17 +307,35 @@ sap.ui.define([
 
             var recognition = new SpeechRecognition();
             recognition.lang = 'pt-BR';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
             recognition.onstart = function() {
-                oBtnMic.setType("Negative").setText("Ouvindo...");
+                if (oBtnMic) {
+                    oBtnMic.setType("Negative").setText("Ouvindo...");
+                }
             };
+
             recognition.onerror = function() {
-                oBtnMic.setType("Emphasized").setText("Falar Destino");
-                oTxtStatus.setText("Falha ao capturar áudio.");
+                if (oBtnMic) {
+                    oBtnMic.setType("Emphasized").setText("Falar Destino");
+                }
+                if (oTxtStatus) {
+                    oTxtStatus.setText("Falha ao capturar áudio.");
+                }
             };
+
             recognition.onresult = function(event) {
-                oBtnMic.setType("Emphasized").setText("Falar Destino");
+                if (oBtnMic) {
+                    oBtnMic.setType("Emphasized").setText("Falar Destino");
+                }
+                
                 var sTexto = event.results[0][0].transcript;
-                oTxtStatus.setText("Buscando por: '" + sTexto + "'");
+                sTexto = sTexto.replace(/\.$/, ""); // Tratamento para remover pontos finais automáticos
+                
+                if (oTxtStatus) {
+                    oTxtStatus.setText("Buscando por: '" + sTexto + "'");
+                }
                 
                 jQuery.ajax({
                     url: "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(sTexto) + "&limit=1",
@@ -322,16 +344,30 @@ sap.ui.define([
                         if (data && data.length > 0) {
                             var fLat = parseFloat(data[0].lat);
                             var fLon = parseFloat(data[0].lon);
+                            
+                            // Extrai apenas o primeiro nome do local para evitar strings gigantes na UI
                             var sNome = data[0].display_name.split(',')[0];
+                            
                             if (window.map) {
                                 window.map.setView([fLat, fLon], 11);
-                                if (window.currentMarker) window.currentMarker.setLatLng([fLat, fLon]);
+                                if (window.currentMarker) {
+                                    window.currentMarker.setLatLng([fLat, fLon]);
+                                } else if (window.L) {
+                                    window.currentMarker = window.L.marker([fLat, fLon]).addTo(window.map);
+                                }
                             }
-                            this._atualizarClimaELugares(fLat, sNome);
+                            // Atualiza a temperatura fictícia coerente e os dados locais no modelo
+                            that._atualizarClimaELugares(fLat, sNome);
+                        } else {
+                            MessageToast.show("Destino não encontrado no mapa.");
                         }
-                    }.bind(this)
+                    },
+                    error: function() {
+                        MessageToast.error("Erro de conectividade na API de Mapas.");
+                    }
                 });
-            }.bind(this);
+            };
+
             recognition.start();
         }
     });
