@@ -1,17 +1,20 @@
-<Input value="{view>/novoDoc/tipo}" placeholder="RG / Passaporte" />
-<Input value="{view>/novoDoc/data}" placeholder="Data" />
-
-<Button text="Salvar Documento" press="onSalvarDocumentos" type="Emphasized" />
-
-<Table items="{view>/documentos}">
-    <columns>
-        <Column><Text text="Tipo" /></Column>
-    </columns>
-    <items>
-        <ColumnListItem>
-            <cells>
-                <Text text="{view>tipo}" />
-            </cells>
-        </ColumnListItem>
-    </items>
-</Table>
+<mvc:View controllerName="ferias1000.controller.Main" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Page title="Férias 1000 - Travel Assistant">
+        <IconTabBar>
+            <items>
+                <IconTabFilter text="Explorar" icon="sap-icon://map">
+                    <Button text="Falar Destino" press="onFalarDestino" />
+                    <Label text="Cidade: {view>/local/cidade}" />
+                    <core:HTML id="map" content="&lt;div id='map' style='height: 400px;'&gt;&lt;/div&gt;" />
+                </IconTabFilter>
+                <IconTabFilter text="Documentos" icon="sap-icon://documents">
+                    <Input id="inputDoc" placeholder="RG / Passaporte" />
+                    <Button text="Salvar Documento" press="onSalvarDocumentos" />
+                    <List items="{view>/documentos}">
+                        <StandardListItem title="{view>tipo}" />
+                    </List>
+                </IconTabFilter>
+            </items>
+        </IconTabBar>
+    </Page>
+</mvc:View>
