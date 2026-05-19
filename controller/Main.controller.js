@@ -8,10 +8,32 @@ sap.ui.define([
     return Controller.extend("ferias1000.controller.Main", {
 
         onInit: function () {
-            console.log("Main Controller - Mecanismo de persistência móvel ativo.");
+            console.log("Main Controller - Inicializando modelo e checando LocalStorage...");
             this._aMapMarkers = [];
 
-            // Inicialização do Reconhecimento de Voz nativo do navegador do celular
+            // 1. Tenta recuperar dados antigos diretamente no início do ciclo de vida
+            var sDocumentosSalvos = localStorage.getItem("ferias1000_documentos");
+            var sReservasSalvas = localStorage.getItem("ferias1000_reservas");
+            var sPassagensSalvas = localStorage.getItem("ferias1000_passagens");
+
+            // 2. Monta a estrutura inicial injetando o que foi recuperado (ou array vazio)
+            var oData = {
+                local: { cidade: "Aguardando..." },
+                clima: { temp: "--" },
+                lugares: [],
+                documentos: sDocumentosSalvos ? JSON.parse(sDocumentosSalvos) : [],
+                reservas: sReservasSalvas ? JSON.parse(sReservasSalvas) : [],
+                passagens: sPassagensSalvas ? JSON.parse(sPassagensSalvas) : []
+            };
+
+            // 3. Instancia e define o modelo DIRETAMENTE na View para garantir amarração correta
+            var oModel = new JSONModel(oData);
+            oModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
+            this.getView().setModel(oModel, "view");
+
+            console.log("Dados carregados com sucesso no modelo 'view':", oData);
+
+            // Inicialização do Reconhecimento de Voz nativo
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (SpeechRecognition) {
                 this._oRecognition = new SpeechRecognition();
@@ -172,7 +194,7 @@ sap.ui.define([
                 var sBase64Result = e.target.result;
                 oBindingContext.getModel().setProperty(oBindingContext.getPath() + "/arquivoBase64", sBase64Result);
                 oBindingContext.getModel().setProperty(oBindingContext.getPath() + "/arquivoNome", oFile.name);
-                MessageToast.show("Arquivo lido! Clique em 'Salvar Dados' para gravar.");
+                MessageToast.show("Arquivo processado temporariamente. Clique em 'Salvar Dados' para fixar.");
             };
             oReader.readAsDataURL(oFile);
         },
@@ -200,24 +222,29 @@ sap.ui.define([
         },
 
         /**
-         * SALVAMENTO CONSOLIDADO SEGURO
+         * SALVAMENTO DIRETÃO E SEGURO
          */
         onSalvarDados: function () {
             var oModel = this.getView().getModel("view");
             if (oModel) {
-                // Força o empurrão imediato dos dados do front-end para as tabelas internas do modelo JSON
+                // Força o SAPUI5 a validar todas as inputs pendentes
                 oModel.updateBindings(true);
 
                 var aDocumentos = oModel.getProperty("/documentos") || [];
                 var aReservas = oModel.getProperty("/reservas") || [];
                 var aPassagens = oModel.getProperty("/passagens") || [];
 
-                // Grava as Strings convertidas em definitivo no dispositivo móvel
+                // Salva no LocalStorage
                 localStorage.setItem("ferias1000_documentos", JSON.stringify(aDocumentos));
                 localStorage.setItem("ferias1000_reservas", JSON.stringify(aReservas));
                 localStorage.setItem("ferias1000_passagens", JSON.stringify(aPassagens));
 
-                MessageToast.show("Perfeito! Todos os seus dados foram gravados de forma segura.");
+                console.log("Mecanismo acionado! Gravado no LocalStorage com sucesso.");
+                console.log("Docs salvos:", aDocumentos);
+
+                MessageToast.show("Dados e anexos persistidos com sucesso!");
+            } else {
+                console.error("Erro fatal: Modelo 'view' não encontrado ao tentar salvar.");
             }
         },
 
