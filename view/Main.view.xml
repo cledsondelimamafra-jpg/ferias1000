@@ -72,7 +72,7 @@
                                 <OverflowToolbar>
                                     <Title text="Meus Documentos de Viagem" level="H2" titleStyle="H4" />
                                     <ToolbarSpacer />
-                                    <Button text="Salvar Documentos" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
+                                    <Button text="Salvar Dados" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
                                     <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarDocumento" />
                                     <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirDocumento" />
                                 </OverflowToolbar>
@@ -80,20 +80,20 @@
                             <columns>
                                 <Column width="35%"><Label text="Tipo de Documento" design="Bold" /></Column>
                                 <Column width="25%"><Label text="Validade / Info" design="Bold" /></Column>
-                                <Column width="30%"><Label text="Anexar Arquivo (PDF/Imagem)" design="Bold" /></Column>
+                                <Column width="30%"><Label text="Anexar Arquivo" design="Bold" /></Column>
                                 <Column width="10%" hAlign="Center"><Label text="Ver" design="Bold" /></Column>
                             </columns>
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Input value="{path: 'view>tipo', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Ex: Passaporte, Visto..." />
-                                        <Input value="{path: 'view>status', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Ex: Válido até 2030" />
+                                        <Input value="{view>tipo}" valueLiveUpdate="true" placeholder="Ex: Passaporte, Visto..." />
+                                        <Input value="{view>status}" valueLiveUpdate="true" placeholder="Ex: Válido até 2030" />
                                         <u:FileUploader 
                                             buttonText="Procurar..." 
                                             value="{view>arquivoNome}"
                                             change="onUploadArquivo"
                                             width="100%" />
-                                        <Button icon="sap-icon://display" type="Transparent" tooltip="Visualizar Documento" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
+                                        <Button icon="sap-icon://display" type="Transparent" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -106,7 +106,7 @@
                                 <OverflowToolbar>
                                     <Title text="Minhas Reservas de Hospedagem" level="H2" titleStyle="H4" />
                                     <ToolbarSpacer />
-                                    <Button text="Salvar Reservas" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
+                                    <Button text="Salvar Dados" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
                                     <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarReserva" />
                                     <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirReserva" />
                                 </OverflowToolbar>
@@ -120,14 +120,14 @@
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Input value="{path: 'view>hotel', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Nome do Hotel ou Airbnb" />
-                                        <Input value="{path: 'view>periodo', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Ex: 10/10 a 15/10" />
+                                        <Input value="{view>hotel}" valueLiveUpdate="true" placeholder="Nome do Hotel ou Airbnb" />
+                                        <Input value="{view>periodo}" valueLiveUpdate="true" placeholder="Ex: 10/10 a 15/10" />
                                         <u:FileUploader 
                                             buttonText="Voucher..." 
                                             value="{view>arquivoNome}"
                                             change="onUploadArquivo"
                                             width="100%" />
-                                        <Button icon="sap-icon://display" type="Transparent" tooltip="Visualizar Voucher" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
+                                        <Button icon="sap-icon://display" type="Transparent" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -140,7 +140,7 @@
                                 <OverflowToolbar>
                                     <Title text="Passagens Aéreas / Bilhetes" level="H2" titleStyle="H4" />
                                     <ToolbarSpacer />
-                                    <Button text="Salvar Passagens" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
+                                    <Button text="Salvar Dados" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
                                     <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarPassagem" />
                                     <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirPassagem" />
                                 </OverflowToolbar>
@@ -154,14 +154,14 @@
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Input value="{path: 'view>voo', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Ex: LATAM LA4567" />
-                                        <Input value="{path: 'view>info', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Ex: Assento 14A" />
+                                        <Input value="{view>voo}" valueLiveUpdate="true" placeholder="Ex: LATAM LA4567" />
+                                        <Input value="{view>info}" valueLiveUpdate="true" placeholder="Ex: Assento 14A" />
                                         <u:FileUploader 
                                             buttonText="Bilhete..." 
                                             value="{view>arquivoNome}"
                                             change="onUploadArquivo"
                                             width="100%" />
-                                        <Button icon="sap-icon://display" type="Transparent" tooltip="Visualizar Bilhete" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
+                                        <Button icon="sap-icon://display" type="Transparent" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -170,7 +170,7 @@
 
                     <VBox id="panelManual" visible="false" class="sapUiResponsiveMargin">
                         <Title text="Manual do Assistente de Viagem" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                        <FormattedText htmlText="&lt;p&gt;&lt;strong&gt;1. Salvamento Seguro Local:&lt;/strong&gt; Ao preencher os dados de documentos, reservas ou passagens, clique no botão &lt;em&gt;Salvar&lt;/em&gt; para fixar de forma blindada na memória interna do seu dispositivo.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;2. Visualização offline:&lt;/strong&gt; O ícone do olho renderiza o documento original direto do celular, independente de conexão de rede externa após salvo.&lt;/p&gt;" />
+                        <FormattedText htmlText="&lt;p&gt;&lt;strong&gt;1. Armazenamento Local:&lt;/strong&gt; Os dados e arquivos anexados são salvos diretamente no banco interno do seu celular corporativo ou pessoal.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;2. Funcionamento Offline:&lt;/strong&gt; Uma vez salvo usando o botão 'Salvar Dados', suas informações permanecem disponíveis mesmo sem sinal de internet.&lt;/p&gt;" />
                     </VBox>
 
                 </content>
