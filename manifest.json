@@ -3,9 +3,6 @@
   "sap.app": {
     "id": "ferias1000",
     "type": "application",
-    "i18n": "i18n/i18n.properties",
-    "title": "{{appTitle}}",
-    "description": "{{appDescription}}",
     "applicationVersion": {
       "version": "1.0.0"
     }
@@ -19,7 +16,6 @@
     }
   },
   "sap.ui5": {
-    "flexibilityRootPredicate": "",
     "rootView": {
       "viewName": "ferias1000.view.Main",
       "type": "XML",
@@ -31,24 +27,9 @@
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.ui.layout": {},
-        "sap.f": {}
+        "sap.ui.layout": {}
       }
     },
-    "contentDensities": {
-      "compact": true,
-      "cozy": true
-    },
-    "models": {
-      "i18n": {
-        "type": "sap.ui.model.resource.ResourceModel",
-        "settings": {
-          "bundleName": "ferias1000.i18n.i18n"
-        }
-      }
-    },
-    "resources": {
-      "css": []
-    }
+    "models": {}
   }
 }
