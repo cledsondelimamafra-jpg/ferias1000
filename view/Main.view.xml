@@ -66,8 +66,15 @@
                     </VBox>
 
                     <VBox id="panelDocumentos" visible="false" class="sapUiResponsiveMargin">
-                        <Title text="Meus Documentos de Viagem" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                        <Table items="{view>/documentos}">
+                        <Table id="tableDocumentos" items="{view>/documentos}" mode="MultiSelect">
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <Title text="Meus Documentos de Viagem" level="H2" titleStyle="H4" />
+                                    <ToolbarSpacer />
+                                    <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarDocumento" />
+                                    <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirDocumento" />
+                                </OverflowToolbar>
+                            </headerToolbar>
                             <columns>
                                 <Column><Label text="Tipo de Documento" design="Bold" /></Column>
                                 <Column><Label text="Status / Validade" design="Bold" /></Column>
@@ -75,8 +82,8 @@
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Text text="{view>tipo}" />
-                                        <Text text="{view>status}" />
+                                        <Input value="{view>tipo}" />
+                                        <Input value="{view>status}" />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -84,8 +91,15 @@
                     </VBox>
 
                     <VBox id="panelReservas" visible="false" class="sapUiResponsiveMargin">
-                        <Title text="Minhas Reservas de Hospedagem" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                        <Table items="{view>/reservas}">
+                        <Table id="tableReservas" items="{view>/reservas}" mode="MultiSelect">
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <Title text="Minhas Reservas de Hospedagem" level="H2" titleStyle="H4" />
+                                    <ToolbarSpacer />
+                                    <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarReserva" />
+                                    <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirReserva" />
+                                </OverflowToolbar>
+                            </headerToolbar>
                             <columns>
                                 <Column><Label text="Hospedagem" design="Bold" /></Column>
                                 <Column><Label text="Período / Status" design="Bold" /></Column>
@@ -93,8 +107,8 @@
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Text text="{view>hotel}" />
-                                        <Text text="{view>periodo}" />
+                                        <Input value="{view>hotel}" />
+                                        <Input value="{view>periodo}" />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -102,8 +116,15 @@
                     </VBox>
 
                     <VBox id="panelPassagens" visible="false" class="sapUiResponsiveMargin">
-                        <Title text="Passagens Aéreas / Bilhetes" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                        <Table items="{view>/passagens}">
+                        <Table id="tablePassagens" items="{view>/passagens}" mode="MultiSelect">
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <Title text="Passagens Aéreas / Bilhetes" level="H2" titleStyle="H4" />
+                                    <ToolbarSpacer />
+                                    <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarPassagem" />
+                                    <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirPassagem" />
+                                </OverflowToolbar>
+                            </headerToolbar>
                             <columns>
                                 <Column><Label text="Voo / Companhia" design="Bold" /></Column>
                                 <Column><Label text="Assento / Horário" design="Bold" /></Column>
@@ -111,8 +132,8 @@
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Text text="{view>voo}" />
-                                        <Text text="{view>info}" />
+                                        <Input value="{view>voo}" />
+                                        <Input value="{view>info}" />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -121,7 +142,7 @@
 
                     <VBox id="panelManual" visible="false" class="sapUiResponsiveMargin">
                         <Title text="Manual do Assistente de Viagem" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                        <FormattedText htmlText="&lt;p&gt;&lt;strong&gt;1. Comando de Voz:&lt;/strong&gt; Clique em 'Falar Destino' e diga o nome de uma cidade (Ex: Belém, Niterói).&lt;/p&gt;&lt;p&gt;&lt;strong&gt;2. Clima e Turismo:&lt;/strong&gt; O sistema trará a temperatura em tempo real e marcará os pontos históricos no mapa automaticamente.&lt;/p&gt;" />
+                        <FormattedText htmlText="&lt;p&gt;&lt;strong&gt;1. Comando de Voz:&lt;/strong&gt; Clique em 'Falar Destino' e diga o nome de uma cidade (Ex: Belém, Niterói).&lt;/p&gt;&lt;p&gt;&lt;strong&gt;2. Clima e Turismo Expandido:&lt;/strong&gt; O sistema trará a temperatura em tempo real e marcará pelo menos 7 pontos históricos proeminentes no mapa automaticamente.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;3. Gestão de Abas:&lt;/strong&gt; Nas abas de Documentos, Reservas e Passagens, use os botões 'Incluir' para adicionar novas linhas digitáveis e selecione os itens desejados usando os checkboxes laterais para efetuar a 'Exclusão'.&lt;/p&gt;" />
                     </VBox>
 
                 </content>
