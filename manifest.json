@@ -1,35 +1,17 @@
 {
-  "_version": "1.58.0",
-  "sap.app": {
-    "id": "ferias1000",
-    "type": "application",
-    "applicationVersion": {
-      "version": "1.0.0"
+  "short_name": "Férias 1000",
+  "name": "Férias 1000 - Travel Assistant",
+  "icons": [
+    {
+      "src": "17788842964068654892709567914732.jpg",
+      "type": "image/jpeg",
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
-  },
-  "sap.ui": {
-    "technology": "UI5",
-    "deviceTypes": {
-      "desktop": true,
-      "tablet": true,
-      "phone": true
-    }
-  },
-  "sap.ui5": {
-    "rootView": {
-      "viewName": "ferias1000.view.Main",
-      "type": "XML",
-      "async": true,
-      "id": "Main"
-    },
-    "dependencies": {
-      "minUI5Version": "1.120.0",
-      "libs": {
-        "sap.m": {},
-        "sap.ui.core": {},
-        "sap.ui.layout": {}
-      }
-    },
-    "models": {}
-  }
+  ],
+  "start_url": "/index.html",
+  "background_color": "#ffffff",
+  "theme_color": "#346191",
+  "display": "standalone",
+  "orientation": "portrait"
 }
