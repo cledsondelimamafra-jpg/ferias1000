@@ -6,8 +6,8 @@ sap.ui.define([
     "use strict";
 
     return Controller.extend("ferias1000.controller.Main", {
+        // Inicialização básica que não quebra o carregamento
         onInit: function () {
-            // Inicializa o modelo com dados vazios para evitar erros
             var oData = {
                 documentos: [],
                 reservas: [],
@@ -16,15 +16,7 @@ sap.ui.define([
             this.getView().setModel(new JSONModel(oData), "view");
         },
 
-        onAfterRendering: function () {
-            // Garante que o mapa seja carregado apenas se o container existir
-            if (!this._oMap && document.getElementById("map")) {
-                this._oMap = L.map("map").setView([-14.2350, -51.9253], 4);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this._oMap);
-            }
-        },
-
-        // Função de voz simples e segura
+        // Função de voz que não depende de outras lógicas complexas
         onFalarDestino: function () {
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (SpeechRecognition) {
@@ -32,11 +24,19 @@ sap.ui.define([
                 recognition.lang = 'pt-BR';
                 recognition.onresult = function(event) {
                     var cidade = event.results[0][0].transcript;
-                    MessageToast.show("Você disse: " + cidade);
+                    MessageToast.show("Destino: " + cidade);
                 };
                 recognition.start();
             } else {
-                MessageToast.show("Seu navegador não suporta comando de voz.");
+                MessageToast.show("Navegador não suporta comando de voz.");
+            }
+        },
+
+        // Inicialização do mapa após a renderização para evitar erro de container
+        onAfterRendering: function () {
+            if (!this._oMap && document.getElementById("map")) {
+                this._oMap = L.map("map").setView([-14.2350, -51.9253], 4);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this._oMap);
             }
         }
     });
