@@ -7,29 +7,27 @@ sap.ui.define([
 
     return Controller.extend("ferias1000.controller.Main", {
         onInit: function () {
-            var oModel = new JSONModel({
-                documentos: JSON.parse(localStorage.getItem("ferias1000_docs") || "[]"),
-                reservas: JSON.parse(localStorage.getItem("ferias1000_res") || "[]"),
-                passagens: JSON.parse(localStorage.getItem("ferias1000_pass") || "[]"),
-                novo: { tipo: "", hotel: "", voo: "" },
-                cidade: "Aguardando..."
-            });
-            this.getView().setModel(oModel, "view");
+            var oData = {
+                novoDoc: { tipo: "", data: "" },
+                documentos: JSON.parse(localStorage.getItem("ferias1000_docs") || "[]")
+            };
+            this.getView().setModel(new JSONModel(oData), "view");
         },
 
-        onSalvar: function (sProp, sKey, sMsg) {
+        onSalvarDocs: function () {
             var oModel = this.getView().getModel("view");
-            var aList = oModel.getProperty("/" + sProp);
-            var oNovo = oModel.getProperty("/novo");
-            aList.push({ ...oNovo });
-            localStorage.setItem(sKey, JSON.stringify(aList));
-            oModel.setProperty("/" + sProp, aList);
-            oModel.setProperty("/novo", { tipo: "", hotel: "", voo: "" });
-            MessageToast.show(sMsg);
-        },
+            var oNovo = oModel.getProperty("/novoDoc");
+            var aDocs = oModel.getProperty("/documentos");
 
-        onSalvarDocs: function () { this.onSalvar("documentos", "ferias1000_docs", "Documento salvo!"); },
-        onSalvarRes: function () { this.onSalvar("reservas", "ferias1000_res", "Reserva salva!"); },
-        onSalvarPass: function () { this.onSalvar("passagens", "ferias1000_pass", "Passagem salva!"); }
+            if (oNovo.tipo !== "") {
+                aDocs.push({ ...oNovo }); // Adiciona o novo item
+                localStorage.setItem("ferias1000_docs", JSON.stringify(aDocs)); // Salva
+                oModel.setProperty("/documentos", aDocs); // Atualiza a tabela na tela
+                oModel.setProperty("/novoDoc", { tipo: "", data: "" }); // Limpa o formulário
+                MessageToast.show("Documento salvo!");
+            } else {
+                MessageToast.show("Preencha o campo de tipo.");
+            }
+        }
     });
 });
