@@ -2,20 +2,19 @@
     xmlns:mvc="sap.ui.core.mvc" 
     xmlns="sap.m">
     <Page title="Férias 1000 - Travel Assistant">
-        <IconTabBar>
+        <IconTabBar id="idIconTabBar">
             <items>
                 <IconTabFilter text="Documentos" icon="sap-icon://documents">
                     <VBox class="sapUiSmallMargin">
                         <Input id="inputDoc" value="{view>/novoDoc/tipo}" placeholder="Digite o documento" />
-                        <Button text="Salvar" press="onSalvarDocs" type="Emphasized" />
+                        <Button text="Salvar Documento" press="onSalvarDocs" type="Emphasized" />
                         <List items="{view>/documentos}">
                             <StandardListItem title="{view>tipo}" />
                         </List>
                     </VBox>
                 </IconTabFilter>
-
                 <IconTabFilter text="Mapa" icon="sap-icon://map">
-                    <Text text="Mapa ativo - Insira aqui o seu controle de mapa." />
+                    <Text text="Mapa configurado." />
                 </IconTabFilter>
             </items>
         </IconTabBar>
