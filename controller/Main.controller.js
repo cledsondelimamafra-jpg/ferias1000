@@ -7,11 +7,13 @@ sap.ui.define([
 
     return Controller.extend("ferias1000.controller.Main", {
         onInit: function () {
+            // Inicializa com dados ou vazio
             var oData = {
                 novoDoc: { tipo: "" },
                 documentos: JSON.parse(localStorage.getItem("docs_salvos") || "[]")
             };
-            this.getView().setModel(new JSONModel(oData), "view");
+            var oModel = new JSONModel(oData);
+            this.getView().setModel(oModel, "view");
         },
 
         onSalvarDocs: function () {
