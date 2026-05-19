@@ -11,8 +11,7 @@ sap.ui.define([
                 novoDoc: { tipo: "" },
                 documentos: JSON.parse(localStorage.getItem("docs_salvos") || "[]")
             };
-            var oModel = new JSONModel(oData);
-            this.getView().setModel(oModel, "view");
+            this.getView().setModel(new JSONModel(oData), "view");
         },
 
         onSalvarDocs: function () {
