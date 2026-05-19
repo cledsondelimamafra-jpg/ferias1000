@@ -8,25 +8,20 @@ sap.ui.define([
     return Controller.extend("ferias1000.controller.Main", {
 
         onInit: function () {
-            console.log("Main Controller operacional - Armazenamento Local e Leitor de Arquivos ativos.");
+            console.log("Main Controller Operacional - Persistência Segura Ativa.");
             this._aMapMarkers = [];
 
-            // Tenta recuperar dados previamente salvos pelo usuário no LocalStorage
+            // Recupera e valida dados salvos no LocalStorage local
             var sDocumentosSalvos = localStorage.getItem("ferias1000_documentos");
             var sReservasSalvas = localStorage.getItem("ferias1000_reservas");
             var sPassagensSalvas = localStorage.getItem("ferias1000_passagens");
 
             var oModel = this.getView().getModel("view");
             if (oModel) {
-                oModel.setProperty("/documentos", sDocumentosSalvos ? JSON.parse(sDocumentosSalvos) : [
-                    { tipo: "Passaporte Nacional", status: "Válido até 2031", arquivoNome: "", arquivoBase64: "" }
-                ]);
-                oModel.setProperty("/reservas", sReservasSalvas ? JSON.parse(sReservasSalvas) : [
-                    { hotel: "Hospedagem Inicial", periodo: "A definir", arquivoNome: "", arquivoBase64: "" }
-                ]);
-                oModel.setProperty("/passagens", sPassagensSalvas ? JSON.parse(sPassagensSalvas) : [
-                    { voo: "Voo de Ida", info: "A definir", arquivoNome: "", arquivoBase64: "" }
-                ]);
+                // Se houver dados válidos guardados, restaura. Caso contrário, inicia com array limpo.
+                oModel.setProperty("/documentos", sDocumentosSalvos ? JSON.parse(sDocumentosSalvos) : []);
+                oModel.setProperty("/reservas", sReservasSalvas ? JSON.parse(sReservasSalvas) : []);
+                oModel.setProperty("/passagens", sPassagensSalvas ? JSON.parse(sPassagensSalvas) : []);
                 oModel.setProperty("/lugares", []);
             }
 
@@ -205,9 +200,11 @@ sap.ui.define([
             var oReader = new FileReader();
             oReader.onload = function (e) {
                 var sBase64Result = e.target.result;
-                // Salva a string Base64 diretamente no item correspondente do JSON Model
                 oBindingContext.getModel().setProperty(oBindingContext.getPath() + "/arquivoBase64", sBase64Result);
-                MessageToast.show("Arquivo processado e pronto para salvar!");
+                
+                // Força o preenchimento automático do nome do arquivo no modelo correspondente
+                oBindingContext.getModel().setProperty(oBindingContext.getPath() + "/arquivoNome", oFile.name);
+                MessageToast.show("Arquivo anexado! Clique em Salvar para fixar na memória.");
             };
             oReader.readAsDataURL(oFile);
         },
@@ -233,20 +230,28 @@ sap.ui.define([
                     MessageToast.show("Permita os pop-ups para visualizar o arquivo.");
                 }
             } else {
-                MessageToast.show("Nenhum arquivo anexado ou carregado.");
+                MessageToast.show("Nenhum arquivo localizado.");
             }
         },
 
         /**
-         * BOTÃO SALVAR - Grava o estado atual no LocalStorage do navegador
+         * BOTÃO SALVAR COMPLETO - Sincroniza e envia blindado para o LocalStorage
          */
         onSalvarDados: function () {
             var oModel = this.getView().getModel("view");
             if (oModel) {
-                localStorage.setItem("ferias1000_documentos", JSON.stringify(oModel.getProperty("/documentos")));
-                localStorage.setItem("ferias1000_reservas", JSON.stringify(oModel.getProperty("/reservas")));
-                localStorage.setItem("ferias1000_passagens", JSON.stringify(oModel.getProperty("/passagens")));
-                MessageToast.show("Alterações e anexos salvos com sucesso no navegador!");
+                // Força a atualização pendente de todas as amarrações de input ativas no UI5
+                oModel.updateBindings(true);
+
+                var aDocumentos = oModel.getProperty("/documentos") || [];
+                var aReservas = oModel.getProperty("/reservas") || [];
+                var aPassagens = oModel.getProperty("/passagens") || [];
+
+                localStorage.setItem("ferias1000_documentos", JSON.stringify(aDocumentos));
+                localStorage.setItem("ferias1000_reservas", JSON.stringify(aReservas));
+                localStorage.setItem("ferias1000_passagens", JSON.stringify(aPassagens));
+
+                MessageToast.show("Todas as informações e passagens foram gravadas no celular!");
             }
         },
 
