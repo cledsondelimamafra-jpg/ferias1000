@@ -1,22 +1,10 @@
-<mvc:View controllerName="ferias1000.controller.Main" 
-    xmlns:mvc="sap.ui.core.mvc" 
-    xmlns="sap.m">
-    <Page title="Férias 1000 - Travel Assistant">
-        <IconTabBar id="idIconTabBar">
-            <items>
-                <IconTabFilter text="Documentos" icon="sap-icon://documents">
-                    <VBox class="sapUiSmallMargin">
-                        <Input id="inputDoc" value="{view>/novoDoc/tipo}" placeholder="Digite o documento" />
-                        <Button text="Salvar Documento" press="onSalvarDocs" type="Emphasized" />
-                        <List items="{view>/documentos}">
-                            <StandardListItem title="{view>tipo}" />
-                        </List>
-                    </VBox>
-                </IconTabFilter>
-                <IconTabFilter text="Mapa" icon="sap-icon://map">
-                    <Text text="Mapa configurado." />
-                </IconTabFilter>
-            </items>
-        </IconTabBar>
+<mvc:View controllerName="ferias1000.controller.Main" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc">
+    <Page title="Teste Definitivo">
+        <content>
+            <Text text="Se você está vendo isso, o XML funciona!" />
+            <List items="{view>/documentos}">
+                <StandardListItem title="{view>tipo}" />
+            </List>
+        </content>
     </Page>
 </mvc:View>
