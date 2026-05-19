@@ -2,175 +2,159 @@
     controllerName="ferias1000.controller.Main"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
+    xmlns:f="sap.f"
     xmlns:core="sap.ui.core"
-    xmlns:u="sap.ui.unified"
+    xmlns:unified="sap.ui.unified"
     displayBlock="true">
 
     <App id="app">
         <pages>
-            <Page id="page" title="Férias 1000 - Travel Assistant">
+            <Page title="Férias 1000 - Travel Assistant">
                 <content>
-                    <IconTabBar id="idIconTabBar" class="sapUiSmallMarginBottom" select="onTabSelect">
+                    <IconTabBar id="idIconTabBarNoIcons" select=".onTabSelect" class="sapUiResponsiveContentPadding">
                         <items>
-                            <IconTabFilter icon="sap-icon://world" text="Explorar" key="explorar" />
-                            <IconTabFilter icon="sap-icon://attachment" text="Documentos" key="documentos" />
-                            <IconTabFilter icon="sap-icon://home" text="Reservas" key="reservas" />
-                            <IconTabFilter icon="sap-icon://flight" text="Passagens" key="passagens" />
-                            <IconTabFilter icon="sap-icon://sys-help" text="Manual" key="manual" />
+                            <IconTabFilter text="Explorar" key="explorar" icon="sap-icon://world" />
+                            <IconTabFilter text="Documentos" key="documentos" icon="sap-icon://attachment" />
+                            <IconTabFilter text="Reservas" key="reservas" icon="sap-icon://home" />
+                            <IconTabFilter text="Passagens" key="passagens" icon="sap-icon://flight" />
+                            <IconTabFilter text="Manual" key="manual" icon="sap-icon://question-mark" />
                         </items>
                     </IconTabBar>
 
-                    <VBox id="panelExplorar" visible="true" class="sapUiResponsiveMargin">
-                        <Title text="Busca por Comando de Voz" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
+                    <VBox id="panelExplorar" visible="true" class="sapUiSmallMargin">
+                        <Title text="Busca por Comando de Voz" level="H2" class="sapUiSmallMarginBottom"/>
                         <HBox alignItems="Center" class="sapUiSmallMarginBottom">
-                            <Button text="Falar Destino" icon="sap-icon://microphone" type="Emphasized" press="onFalarDestino" class="sapUiSmallMarginEnd" />
-                            <Text text="Buscando por: '{view>/local/cidade}'" />
+                            <Button text="Falar Destino" icon="sap-icon://microphone" press=".onFalarDestino" type="Emphasized"/>
+                            <Text text="{view>/local/statusVoz}" class="sapUiSmallMarginBegin"/>
                         </HBox>
 
-                        <ToolbarSeparator class="sapUiMediumMarginTopBottom" />
+                        <Title text="Clima Atual" level="H2" class="sapUiSmallMarginTopBottom"/>
+                        <Table class="sapUiSmallMarginBottom">
+                            <columns>
+                                <Column hAlign="Center"><Text text="Local" /></Column>
+                                <Column hAlign="Center"><Text text="Temp" /></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{view>/local/cidade}" />
+                                        <Text text="{view>/clima/temp}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
 
-                        <Title text="Clima Atual" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                        <HBox class="sapUiSmallMarginBottom" width="100%">
-                            <VBox width="50%" alignItems="Center">
-                                <Label text="Local" design="Bold" />
-                                <Text text="{view>/local/cidade}" />
-                            </VBox>
-                            <VBox width="50%" alignItems="Center">
-                                <Label text="Temp" design="Bold" />
-                                <Text text="{view>/clima/temp}" />
-                            </VBox>
+                        <Title text="Sugestões de Destinos (Mapeamento de Pontos Turísticos Reais)" level="H2" class="sapUiSmallMarginTopBottom"/>
+                        <Table items="{view>/lugares}" noDataText="Sem dados">
+                            <columns>
+                                <Column><Text text="Nome do Ponto Turístico" /></Column>
+                                <Column><Text text="Categoria / Info" /></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{view Khoa/nome}" />
+                                        <Text text="{view Khoa/desc}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+
+                        <Panel headerText="Mapa da Região" expandable="false">
+                            <core:HTML content="&lt;div id='map' style='width: 100%; height: 450px; border-radius: 8px; border: 1px solid #ccc;'&gt;&lt;/div&gt;"></core:HTML>
+                        </Panel>
+                    </VBox>
+
+                    <VBox id="panelDocumentos" visible="false" class="sapUiSmallMargin">
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                            <Title text="Meus Documentos de Viagem" level="H2"/>
+                            <HBox>
+                                <Button text="Salvar Dados" icon="sap-icon://save" type="Emphasized" press=".onSalvarDocumentos" class="sapUiTinyMarginEnd"/>
+                                <Button text="Incluir" icon="sap-icon://add" type="Accept" press=".onAdicionarDocumento" class="sapUiTinyMarginEnd"/>
+                                <Button text="Excluir" icon="sap-icon://delete" type="Reject" press=".onExcluirDocumento"/>
+                            </HBox>
                         </HBox>
-
-                        <ToolbarSeparator class="sapUiMediumMarginTopBottom" />
-
-                        <Title text="Sugestões de Destinos (Mapeamento de Pontos Turísticos Reais)" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                        
-                        <core:HTML 
-                            id="map" 
-                            content='&lt;div id="map" style="width: 100%; height: 400px; border-radius: 8px; border: 1px solid #ccc; z-index: 1;"&gt;&lt;/div&gt;'>
-                        </core:HTML>
-
-                        <Table items="{view>/lugares}" class="sapUiMediumMarginTop">
+                        <Table id="tableDocumentos" mode="MultiSelect" items="{view>/documentos}" noDataText="Sem dados">
                             <columns>
-                                <Column><Label text="Ponto Turístico Real" design="Bold" /></Column>
-                                <Column><Label text="Categoria" design="Bold" /></Column>
+                                <Column width="40%"><Text text="Tipo de Documento" /></Column>
+                                <Column width="25%"><Text text="Validade / Info" /></Column>
+                                <Column width="25%"><Text text="Anexar Arquivo" /></Column>
+                                <Column width="10%" hAlign="Center"><Text text="Ver" /></Column>
                             </columns>
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Text text="{view>nome}" />
-                                        <Text text="{view>desc}" />
+                                        <Input value="{view>tipo}" placeholder="Ex: Passaporte, Visto, RG..."/>
+                                        <Input value="{view>status}" placeholder="Ex: Validade, Observação..."/>
+                                        <unified:FileUploader buttonOnly="true" iconOnly="false" buttonText="Escolher..." icon="sap-icon://attachment" change=".onUploadArquivo"/>
+                                        <Button icon="sap-icon://sys-find" enabled="{= ${view>arquivoBase64} !== '' ? true : false }" press=".onVisualizarArquivo"/>
                                     </cells>
                                 </ColumnListItem>
                             </items>
                         </Table>
                     </VBox>
 
-                    <VBox id="panelDocumentos" visible="false" class="sapUiResponsiveMargin">
-                        <Table id="tableDocumentos" items="{view>/documentos}" mode="MultiSelect">
-                            <headerToolbar>
-                                <OverflowToolbar>
-                                    <Title text="Meus Documentos de Viagem" level="H2" titleStyle="H4" />
-                                    <ToolbarSpacer />
-                                    <Button text="Salvar Dados" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
-                                    <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarDocumento" />
-                                    <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirDocumento" />
-                                </OverflowToolbar>
-                            </headerToolbar>
+                    <VBox id="panelReservas" visible="false" class="sapUiSmallMargin">
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                            <Title text="Minhas Reservas de Hospedagem" level="H2"/>
+                            <HBox>
+                                <Button text="Salvar Reservas" icon="sap-icon://save" type="Emphasized" press=".onSalvarReservas" class="sapUiTinyMarginEnd"/>
+                                <Button text="Incluir" icon="sap-icon://add" type="Accept" press=".onAdicionarReserva" class="sapUiTinyMarginEnd"/>
+                                <Button text="Excluir" icon="sap-icon://delete" type="Reject" press=".onExcluirReserva"/>
+                            </HBox>
+                        </HBox>
+                        <Table id="tableReservas" mode="MultiSelect" items="{view>/reservas}" noDataText="Sem dados">
                             <columns>
-                                <Column width="35%"><Label text="Tipo de Documento" design="Bold" /></Column>
-                                <Column width="25%"><Label text="Validade / Info" design="Bold" /></Column>
-                                <Column width="30%"><Label text="Anexar Arquivo" design="Bold" /></Column>
-                                <Column width="10%" hAlign="Center"><Label text="Ver" design="Bold" /></Column>
+                                <Column width="40%"><Text text="Hospedagem / Hotel" /></Column>
+                                <Column width="25%"><Text text="Período" /></Column>
+                                <Column width="25%"><Text text="Voucher / Comprovante" /></Column>
+                                <Column width="10%" hAlign="Center"><Text text="Ver" /></Column>
                             </columns>
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Input value="{view>tipo}" valueLiveUpdate="true" placeholder="Ex: Passaporte, Visto..." />
-                                        <Input value="{view>status}" valueLiveUpdate="true" placeholder="Ex: Válido até 2030" />
-                                        <u:FileUploader 
-                                            buttonText="Procurar..." 
-                                            value="{view>arquivoNome}"
-                                            change="onUploadArquivo"
-                                            width="100%" />
-                                        <Button icon="sap-icon://display" type="Transparent" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
+                                        <Input value="{view>hotel}" placeholder="Ex: Hotel Paraíso, Airbnb..."/>
+                                        <Input value="{view>periodo}" placeholder="Ex: 10/10 a 15/10..."/>
+                                        <unified:FileUploader buttonOnly="true" iconOnly="false" buttonText="Escolher..." icon="sap-icon://attachment" change=".onUploadArquivo"/>
+                                        <Button icon="sap-icon://sys-find" enabled="{= ${view>arquivoBase64} !== '' ? true : false }" press=".onVisualizarArquivo"/>
                                     </cells>
                                 </ColumnListItem>
                             </items>
                         </Table>
                     </VBox>
 
-                    <VBox id="panelReservas" visible="false" class="sapUiResponsiveMargin">
-                        <Table id="tableReservas" items="{view>/reservas}" mode="MultiSelect">
-                            <headerToolbar>
-                                <OverflowToolbar>
-                                    <Title text="Minhas Reservas de Hospedagem" level="H2" titleStyle="H4" />
-                                    <ToolbarSpacer />
-                                    <Button text="Salvar Dados" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
-                                    <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarReserva" />
-                                    <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirReserva" />
-                                </OverflowToolbar>
-                            </headerToolbar>
+                    <VBox id="panelPassagens" visible="false" class="sapUiSmallMargin">
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                            <Title text="Minhas Passagens e Bilhetes" level="H2"/>
+                            <HBox>
+                                <Button text="Salvar Passagens" icon="sap-icon://save" type="Emphasized" press=".onSalvarPassagens" class="sapUiTinyMarginEnd"/>
+                                <Button text="Incluir" icon="sap-icon://add" type="Accept" press=".onAdicionarPassagem" class="sapUiTinyMarginEnd"/>
+                                <Button text="Excluir" icon="sap-icon://delete" type="Reject" press=".onExcluirPassagem"/>
+                            </HBox>
+                        </HBox>
+                        <Table id="tablePassagens" mode="MultiSelect" items="{view>/passagens}" noDataText="Sem dados">
                             <columns>
-                                <Column width="35%"><Label text="Hospedagem / Hotel" design="Bold" /></Column>
-                                <Column width="25%"><Label text="Período" design="Bold" /></Column>
-                                <Column width="30%"><Label text="Voucher / Comprovante" design="Bold" /></Column>
-                                <Column width="10%" hAlign="Center"><Label text="Ver" design="Bold" /></Column>
+                                <Column width="40%"><Text text="Voo / Localizador" /></Column>
+                                <Column width="25%"><Text text="Info Adicional" /></Column>
+                                <Column width="25%"><Text text="Bilhete / Anexo" /></Column>
+                                <Column width="10%" hAlign="Center"><Text text="Ver" /></Column>
                             </columns>
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Input value="{view>hotel}" valueLiveUpdate="true" placeholder="Nome do Hotel ou Airbnb" />
-                                        <Input value="{view>periodo}" valueLiveUpdate="true" placeholder="Ex: 10/10 a 15/10" />
-                                        <u:FileUploader 
-                                            buttonText="Voucher..." 
-                                            value="{view>arquivoNome}"
-                                            change="onUploadArquivo"
-                                            width="100%" />
-                                        <Button icon="sap-icon://display" type="Transparent" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
+                                        <Input value="{view>voo}" placeholder="Ex: Voo G3-1234, Localizador XYZ..."/>
+                                        <Input value="{view>info}" placeholder="Ex: Portão, Terminal, Horário..."/>
+                                        <unified:FileUploader buttonOnly="true" iconOnly="false" buttonText="Escolher..." icon="sap-icon://attachment" change=".onUploadArquivo"/>
+                                        <Button icon="sap-icon://sys-find" enabled="{= ${view>arquivoBase64} !== '' ? true : false }" press=".onVisualizarArquivo"/>
                                     </cells>
                                 </ColumnListItem>
                             </items>
                         </Table>
                     </VBox>
 
-                    <VBox id="panelPassagens" visible="false" class="sapUiResponsiveMargin">
-                        <Table id="tablePassagens" items="{view>/passagens}" mode="MultiSelect">
-                            <headerToolbar>
-                                <OverflowToolbar>
-                                    <Title text="Passagens Aéreas / Bilhetes" level="H2" titleStyle="H4" />
-                                    <ToolbarSpacer />
-                                    <Button text="Salvar Dados" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
-                                    <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarPassagem" />
-                                    <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirPassagem" />
-                                </OverflowToolbar>
-                            </headerToolbar>
-                            <columns>
-                                <Column width="35%"><Label text="Voo / Companhia" design="Bold" /></Column>
-                                <Column width="25%"><Label text="Assento / Horário" design="Bold" /></Column>
-                                <Column width="30%"><Label text="Bilhete Eletrônico" design="Bold" /></Column>
-                                <Column width="10%" hAlign="Center"><Label text="Ver" design="Bold" /></Column>
-                            </columns>
-                            <items>
-                                <ColumnListItem>
-                                    <cells>
-                                        <Input value="{view>voo}" valueLiveUpdate="true" placeholder="Ex: LATAM LA4567" />
-                                        <Input value="{view>info}" valueLiveUpdate="true" placeholder="Ex: Assento 14A" />
-                                        <u:FileUploader 
-                                            buttonText="Bilhete..." 
-                                            value="{view>arquivoNome}"
-                                            change="onUploadArquivo"
-                                            width="100%" />
-                                        <Button icon="sap-icon://display" type="Transparent" press="onVisualizarArquivo" enabled="{= ${view>arquivoBase64} !== undefined &amp;&amp; ${view>arquivoBase64} !== '' }" />
-                                    </cells>
-                                </ColumnListItem>
-                            </items>
-                        </Table>
-                    </VBox>
-
-                    <VBox id="panelManual" visible="false" class="sapUiResponsiveMargin">
-                        <Title text="Manual do Assistente de Viagem" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                        <FormattedText htmlText="&lt;p&gt;&lt;strong&gt;1. Armazenamento Local:&lt;/strong&gt; Os dados e arquivos anexados são salvos diretamente no banco interno do seu celular corporativo ou pessoal.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;2. Funcionamento Offline:&lt;/strong&gt; Uma vez salvo usando o botão 'Salvar Dados', suas informações permanecem disponíveis mesmo sem sinal de internet.&lt;/p&gt;" />
+                    <VBox id="panelManual" visible="false" class="sapUiSmallMargin">
+                        <Title text="Manual de Instruções do Aplicativo" level="H2" class="sapUiSmallMarginBottom"/>
+                        <FormattedText htmlText="&lt;p&gt;Bem-vindo ao seu assistente de viagens inteligente!&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Explorar:&lt;/b&gt; Clique no botão de microfone e fale o nome de uma cidade para centralizar o mapa e carregar os pontos turísticos.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Documentos, Reservas e Passagens:&lt;/b&gt; Adicione linhas, preencha as informações e anexe PDFs ou imagens. Lembre-se de clicar no botão salvar da respectiva aba para guardar seus dados.&lt;/li&gt;&lt;/ul&gt;" />
                     </VBox>
 
                 </content>
