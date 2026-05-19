@@ -10,7 +10,7 @@ sap.ui.define([
         _marker: null,
 
         onInit: function () {
-            // Mantém o seu modelo original inicializado com Diamantina
+            // Mantém os dados iniciais do seu modelo de backup
             var oModel = new JSONModel({
                 local: {
                     cidade: "Diamantina, MG",
@@ -50,15 +50,13 @@ sap.ui.define([
             }
         },
 
-        // GATILHO DO MICROFONE: Ativa quando você clica em "Falar Destino"
+        // IMPLEMENTAÇÃO DO MICROFONE
         onIniciarComandoVoz: function () {
             var that = this;
-            
-            // Verifica as APIs de voz suportadas pelos navegadores (Chrome, Edge, etc.)
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             
             if (!SpeechRecognition) {
-                MessageToast.show("O reconhecimento de voz não é suportado neste navegador.");
+                MessageToast.show("Reconhecimento de voz não suportado neste navegador.");
                 return;
             }
 
@@ -67,34 +65,30 @@ sap.ui.define([
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
-            // Feedback visual quando o navegador começa a ouvir
             recognition.onstart = function () {
-                MessageToast.show("Microfone ativado! Fale o destino...");
+                MessageToast.show("Microfone ativado! Fale o destino de viagem...");
             };
 
-            // Tratamento caso dê algum erro de permissão ou silêncio
             recognition.onerror = function (event) {
+                console.error("Erro capturado no microfone: ", event.error);
                 MessageToast.show("Erro no microfone: " + event.error);
             };
 
-            // Captura o resultado da voz e envia para a sua função de busca
             recognition.onresult = function (event) {
-                var sResultadoVoz = event.results[0][0].transcript;
+                var sResult = event.results[0][0].transcript;
+                // Remove pontos finais automáticos que quebram queries de URL
+                sResult = sResult.replace(/\.$/, ""); 
                 
-                // Remove ponto final que alguns navegadores inserem automaticamente
-                sResultadoVoz = sResultadoVoz.replace(/\.$/, ""); 
+                MessageToast.show("Destino detectado: " + sResult);
                 
-                MessageToast.show("Entendido: " + sResultadoVoz);
-                
-                // Executa a busca no mapa usando o texto que você acabou de falar
-                that._buscarCidadeAPI(sResultadoVoz);
+                // Dispara a busca utilizando o termo reconhecido por voz
+                that._buscarCidadeAPI(sResult);
             };
 
-            // Inicia a escuta do microfone
             recognition.start();
         },
 
-        // FUNÇÃO DE BUSCA: Atualiza o mapa com o termo recebido
+        // BUSCA E ATUALIZAÇÃO DO MAPA
         _buscarCidadeAPI: function (sCidade) {
             var oModel = this.getView().getModel("view");
             var that = this;
@@ -110,24 +104,23 @@ sap.ui.define([
                         var lat = parseFloat(oLocal.lat);
                         var lon = parseFloat(oLocal.lon);
 
-                        // Atualiza os dados de localidade na tela
+                        // Atualiza as propriedades do modelo na tela
                         oModel.setProperty("/local/cidade", oLocal.display_name);
                         oModel.setProperty("/local/coordenadas", lat.toFixed(4) + ", " + lon.toFixed(4));
                         oModel.setProperty("/clima/temp", (16 + Math.floor(Math.random() * 14)) + " °C");
 
-                        // Move o mapa e o marcador para as coordenadas capturadas pela voz
+                        // Move dinamicamente o marcador e o foco do mapa para o local falado
                         if (that._map && that._marker) {
                             that._map.setView([lat, lon], 12);
                             that._marker.setLatLng([lat, lon]);
                             that._marker.getPopup().setContent("Destino: " + sCidade).update().openPopup();
                         }
                     } else {
-                        MessageToast.show("Localidade não encontrada no mapa.");
+                        MessageToast.show("Localidade não encontrada.");
                     }
                 })
                 .catch(function (error) {
-                    console.error("Erro na busca da cidade: ", error);
-                    MessageToast.show("Erro ao conectar com o serviço de mapas.");
+                    console.error("Erro na requisição da API de mapas: ", error);
                 });
         }
     });
