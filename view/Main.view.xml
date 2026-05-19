@@ -1,9 +1,8 @@
 <mvc:View controllerName="ferias1000.controller.Main" 
     xmlns:mvc="sap.ui.core.mvc" 
-    xmlns="sap.m" 
-    xmlns:core="sap.ui.core">
+    xmlns="sap.m">
     <Page title="Férias 1000 - Travel Assistant">
-        <IconTabBar id="idIconTabBar">
+        <IconTabBar>
             <items>
                 <IconTabFilter text="Documentos" icon="sap-icon://documents">
                     <VBox class="sapUiSmallMargin">
@@ -14,8 +13,9 @@
                         </List>
                     </VBox>
                 </IconTabFilter>
+
                 <IconTabFilter text="Mapa" icon="sap-icon://map">
-                    <Text text="Funcionalidade do mapa em breve." />
+                    <Text text="Mapa ativo - Insira aqui o seu controle de mapa." />
                 </IconTabFilter>
             </items>
         </IconTabBar>
