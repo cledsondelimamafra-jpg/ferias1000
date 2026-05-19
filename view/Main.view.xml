@@ -1,15 +1,10 @@
-<mvc:View controllerName="ferias1000.controller.Main" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core">
+<mvc:View controllerName="ferias1000.controller.Main" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
     <Page title="Férias 1000 - Travel Assistant">
         <IconTabBar>
             <items>
-                <IconTabFilter text="Explorar" icon="sap-icon://map">
-                    <Button text="Falar Destino" press="onFalarDestino" />
-                    <Label text="Cidade: {view>/local/cidade}" />
-                    <core:HTML id="map" content="&lt;div id='map' style='height: 400px;'&gt;&lt;/div&gt;" />
-                </IconTabFilter>
                 <IconTabFilter text="Documentos" icon="sap-icon://documents">
-                    <Input id="inputDoc" placeholder="RG / Passaporte" />
-                    <Button text="Salvar Documento" press="onSalvarDocumentos" />
+                    <Input value="{view>/novo/tipo}" placeholder="Tipo de documento" />
+                    <Button text="Salvar Documento" press="onSalvarDocs" />
                     <List items="{view>/documentos}">
                         <StandardListItem title="{view>tipo}" />
                     </List>
