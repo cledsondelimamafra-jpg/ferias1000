@@ -6,65 +6,51 @@ sap.ui.define([
     "use strict";
 
     return Controller.extend("ferias1000.controller.Main", {
+        
+        // --- INICIALIZAÇÃO ---
         onInit: function () {
-            // Modelo de dados inicializado
             var oData = {
                 documentos: JSON.parse(localStorage.getItem("ferias1000_documentos") || "[]"),
                 reservas: JSON.parse(localStorage.getItem("ferias1000_reservas") || "[]"),
                 passagens: JSON.parse(localStorage.getItem("ferias1000_passagens") || "[]"),
-                local: { cidade: "Aguardando...", statusVoz: "Pronto" },
-                clima: { temp: "--" }
+                local: { cidade: "Aguardando...", statusVoz: "Pronto" }
             };
-            this.getView().setModel(new JSONModel(oData), "view");
+            var oModel = new JSONModel(oData);
+            this.getView().setModel(oModel, "view");
         },
 
+        // --- FUNÇÕES DE MAPA E VOZ (MODULAR) ---
         onAfterRendering: function () {
-            // Inicia o mapa apenas após a renderização da tela
-            if (!this._oMap) {
-                var oMapDom = document.getElementById("map");
-                if (oMapDom) {
-                    this._oMap = L.map(oMapDom).setView([-14.2350, -51.9253], 4);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this._oMap);
-                }
+            this._initMap();
+        },
+
+        _initMap: function () {
+            if (!this._oMap && document.getElementById("map")) {
+                this._oMap = L.map("map").setView([-14.2350, -51.9253], 4);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this._oMap);
             }
         },
 
         onFalarDestino: function () {
-            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SpeechRecognition) {
-                var oRecognition = new SpeechRecognition();
-                oRecognition.lang = 'pt-BR';
-                oRecognition.onresult = function (event) {
-                    var sCidade = event.results[0][0].transcript;
-                    this.getView().getModel("view").setProperty("/local/cidade", sCidade);
-                    MessageToast.show("Destino: " + sCidade);
-                }.bind(this);
-                oRecognition.start();
-            } else {
-                MessageToast.show("Navegador não suporta voz.");
-            }
+            var oRec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            oRec.lang = 'pt-BR';
+            oRec.onresult = function(e) {
+                var s = e.results[0][0].transcript;
+                this.getView().getModel("view").setProperty("/local/cidade", s);
+                MessageToast.show("Destino: " + s);
+            }.bind(this);
+            oRec.start();
         },
 
-        // Métodos de Persistência (Salvar)
-        onSalvarDocumentos: function () { this._persistir("ferias1000_documentos", "/documentos", "Documentos salvos!"); },
-        onSalvarReservas: function () { this._persistir("ferias1000_reservas", "/reservas", "Reservas salvas!"); },
-        onSalvarPassagens: function () { this._persistir("ferias1000_passagens", "/passagens", "Passagens salvas!"); },
+        // --- FUNÇÕES DE ABA (ISOLADAS) ---
+        onSalvarDocumentos: function () { this._salvar("ferias1000_documentos", "/documentos"); },
+        onSalvarReservas: function () { this._salvar("ferias1000_reservas", "/reservas"); },
+        onSalvarPassagens: function () { this._salvar("ferias1000_passagens", "/passagens"); },
 
-        _persistir: function (sKey, sPath, sMsg) {
-            var aData = this.getView().getModel("view").getProperty(sPath);
-            localStorage.setItem(sKey, JSON.stringify(aData));
-            MessageToast.show(sMsg);
-        },
-
-        // Métodos de Adição de Linhas
-        onAdicionarDocumento: function () { this._adicionarLinha("/documentos", { tipo: "", status: "" }); },
-        onAdicionarReserva: function () { this._adicionarLinha("/reservas", { hotel: "", periodo: "" }); },
-        onAdicionarPassagem: function () { this._adicionarLinha("/passagens", { voo: "", info: "" }); },
-
-        _adicionarLinha: function (sPath, oTemplate) {
-            var aData = this.getView().getModel("view").getProperty(sPath);
-            aData.push(oTemplate);
-            this.getView().getModel("view").setProperty(sPath, aData);
+        _salvar: function (key, path) {
+            var data = this.getView().getModel("view").getProperty(path);
+            localStorage.setItem(key, JSON.stringify(data));
+            MessageToast.show("Salvo em: " + key.split("_")[1]);
         }
     });
 });
