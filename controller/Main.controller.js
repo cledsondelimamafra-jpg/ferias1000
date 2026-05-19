@@ -96,6 +96,7 @@ sap.ui.define([
                         var lat = parseFloat(oLocal.lat);
                         var lon = parseFloat(oLocal.lon);
 
+                        // Atualiza as coordenadas e cidade
                         oModel.setProperty("/local/cidade", oLocal.display_name);
                         oModel.setProperty("/local/coordenadas", lat.toFixed(4) + ", " + lon.toFixed(4));
                         oModel.setProperty("/clima/temp", (16 + Math.floor(Math.random() * 14)) + " °C");
@@ -106,6 +107,7 @@ sap.ui.define([
                             that._marker.getPopup().setContent("Destino: " + sCidade).update().openPopup();
                         }
 
+                        // Dispara chamada para buscar atrações turísticas daquela cidade específica
                         var sUrlPontos = "https://nominatim.openstreetmap.org/search?format=json&q=tourism+in+" + encodeURIComponent(sCidade) + "&limit=5";
                         return fetch(sUrlPontos, { headers: { 'Accept': 'application/json' } });
                     } else {
@@ -119,24 +121,30 @@ sap.ui.define([
                 .then(function (pontosData) {
                     if (pontosData && pontosData.length > 0) {
                         var aLugaresDinamicos = pontosData.map(function (ponto) {
-                            var sNomeCurto = ponto.name || ponto.display_name.split(',')[0];
-                            var sCategoria = "Ponto Turístico";
+                            // Pega o nome do ponto turístico ou o primeiro fragmento do endereço longo
+                            var sNomeCurto = ponto.name || (ponto.display_name ? ponto.display_name.split(',')[0] : "Ponto Turístico");
+                            var sCategoria = "Atração Local";
+                            
                             if (ponto.type === "museum") sCategoria = "Museu & Cultura";
                             if (ponto.type === "viewpoint") sCategoria = "Mirante & Paisagem";
-                            if (ponto.type === "attraction") sCategoria = "Atração Local";
-                            
+                            if (ponto.type === "theme_park") sCategoria = "Parque de Diversões";
+                            if (ponto.type === "aquarium") sCategoria = "Aquário / Lazer";
+
                             return { nome: sNomeCurto, categoria: sCategoria };
                         });
+                        
+                        // Atualiza a tabela dinamicamente eliminando os dados de Diamantina anterior
                         oModel.setProperty("/lugares", aLugaresDinamicos);
                     } else {
+                        // Caso a API não retorne pontos específicos, monta opções padrão para a localidade
                         oModel.setProperty("/lugares", [
-                            { nome: "Centro Histórico", categoria: "Passeio" },
-                            { nome: "Praça Central", categoria: "Exploração Urbana" }
+                            { nome: "Centro da Cidade", categoria: "Exploração Urbana" },
+                            { nome: "Praça Principal", categoria: "Passeio Turístico" }
                         ]);
                     }
                 })
                 .catch(function (error) {
-                    console.error("Erro na requisição: ", error);
+                    console.error("Erro na requisição das atividades: ", error);
                 });
         }
     });
