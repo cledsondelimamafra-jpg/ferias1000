@@ -8,23 +8,10 @@ sap.ui.define([
     return Controller.extend("ferias1000.controller.Main", {
 
         onInit: function () {
-            console.log("Main Controller Operacional - Persistência Segura Ativa.");
+            console.log("Main Controller - Mecanismo de persistência móvel ativo.");
             this._aMapMarkers = [];
 
-            // Recupera e valida dados salvos no LocalStorage local
-            var sDocumentosSalvos = localStorage.getItem("ferias1000_documentos");
-            var sReservasSalvas = localStorage.getItem("ferias1000_reservas");
-            var sPassagensSalvas = localStorage.getItem("ferias1000_passagens");
-
-            var oModel = this.getView().getModel("view");
-            if (oModel) {
-                // Se houver dados válidos guardados, restaura. Caso contrário, inicia com array limpo.
-                oModel.setProperty("/documentos", sDocumentosSalvos ? JSON.parse(sDocumentosSalvos) : []);
-                oModel.setProperty("/reservas", sReservasSalvas ? JSON.parse(sReservasSalvas) : []);
-                oModel.setProperty("/passagens", sPassagensSalvas ? JSON.parse(sPassagensSalvas) : []);
-                oModel.setProperty("/lugares", []);
-            }
-
+            // Inicialização do Reconhecimento de Voz nativo do navegador do celular
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (SpeechRecognition) {
                 this._oRecognition = new SpeechRecognition();
@@ -40,9 +27,8 @@ sap.ui.define([
         },
 
         initMap: function () {
-            var oMapDomRef = null;
-            if (this.getView().byId("map")) { oMapDomRef = this.getView().byId("map").getDomRef(); }
-            if (!oMapDomRef) { oMapDomRef = document.getElementById("map") || document.querySelector("[id*='--map']"); }
+            var oMapDomRef = this.getView().byId("map") ? this.getView().byId("map").getDomRef() : null;
+            if (!oMapDomRef) { oMapDomRef = document.getElementById("map"); }
 
             if (oMapDomRef && !this._oMap) {
                 this._oMap = L.map(oMapDomRef).setView([-14.2350, -51.9253], 4);
@@ -70,7 +56,7 @@ sap.ui.define([
         onFalarDestino: function () {
             if (this._oRecognition) {
                 this._oRecognition.start();
-                MessageToast.show("Ouvindo... Fale qualquer cidade!");
+                MessageToast.show("Ouvindo... Fale o destino da sua viagem!");
             }
         },
 
@@ -87,7 +73,6 @@ sap.ui.define([
 
         _buscarGeocodificacao: function (sCidade) {
             var sUrl = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(sCidade) + "&limit=1";
-            
             fetch(sUrl)
                 .then(function (res) { return res.json(); })
                 .then(function (data) {
@@ -113,7 +98,6 @@ sap.ui.define([
         _buscarClimaReal: function (lat, lon) {
             var sWeatherUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current_weather=true";
             var oModel = this.getView().getModel("view");
-
             fetch(sWeatherUrl)
                 .then(function (res) { return res.json(); })
                 .then(function (weatherData) {
@@ -131,14 +115,13 @@ sap.ui.define([
                 .then(function (res) { return res.json(); })
                 .then(function (data) {
                     var aLugaresMapeados = [];
-
                     if (data && data.elements && data.elements.length > 0) {
                         data.elements.forEach(function (elemento) {
                             if (elemento.tags && elemento.tags.name) {
                                 var sCategoria = elemento.tags.tourism || "Atração Cultural";
                                 if (sCategoria === "attraction") { sCategoria = "Ponto Turístico"; }
                                 else if (sCategoria === "museum") { sCategoria = "Museu Histórico"; }
-                                else if (sCategoria === "viewpoint") { sCategoria = "Mirante / Vista"; }
+                                else if (sCategoria === "viewpoint") { sCategoria = "Mirante"; }
 
                                 aLugaresMapeados.push({
                                     nome: elemento.tags.name,
@@ -151,34 +134,24 @@ sap.ui.define([
                     }
 
                     if (aLugaresMapeados.length < 7) {
-                        var iFaltantes = 7 - aLugaresMapeados.length;
-                        var nomesPadrao = ["Praça Central Histórica", "Monumento Histórico Local", "Igreja Matriz Antiga", "Mercado Municipal Regional", "Parque Ecológico", "Centro de Atendimento", "Mirante"];
-                        for (var i = 0; i < iFaltantes; i++) {
-                            aLugaresMapeados.push({
-                                nome: nomesPadrao[i] || "Ponto de Interesse " + (i + 1),
-                                lat: lat + (Math.sin(i) * 0.005),
-                                lng: lon + (Math.cos(i) * 0.005),
-                                desc: "ATRAÇÃO LOCAL"
-                            });
+                        var names = ["Praça Central", "Monumento Histórico", "Igreja Matriz", "Mercado Público", "Parque Municipal"];
+                        for (var i = 0; i < (7 - aLugaresMapeados.length); i++) {
+                            aLugaresMapeados.push({ nome: names[i] || "Atração Local", lat: lat + (i * 0.003), lng: lon + (i * 0.003), desc: "PONTO TURÍSTICO" });
                         }
                     }
 
-                    var aSeteMelhores = aLugaresMapeados.slice(0, 7);
-                    oModel.setProperty("/lugares", aSeteMelhores);
+                    var aResultados = aLugaresMapeados.slice(0, 7);
+                    oModel.setProperty("/lugares", aResultados);
 
-                    aSeteMelhores.forEach(function (ponto) {
+                    aResultados.forEach(function (ponto) {
                         var oPino = L.marker([ponto.lat, ponto.lng]).addTo(this._oMap)
                             .bindPopup("<b>" + ponto.nome + "</b><br>" + ponto.desc);
                         this._aMapMarkers.push(oPino);
                     }.bind(this));
-
                 }.bind(this))
-                .catch(function (err) {
-                    var aFallback = [];
-                    for (var i = 1; i <= 7; i++) {
-                        aFallback.push({ nome: "Ponto Turístico Relevante " + i, lat: lat + (i * 0.002), lng: lon - (i * 0.002), desc: "PONTO HISTÓRICO" });
-                    }
-                    oModel.setProperty("/lugares", aFallback);
+                .catch(function () {
+                    var fallback = [{ nome: "Ponto Turístico Central", lat: lat, lng: lon, desc: "VISITA OBRIGATÓRIA" }];
+                    oModel.setProperty("/lugares", fallback);
                 }.bind(this));
         },
 
@@ -187,9 +160,6 @@ sap.ui.define([
             this._aMapMarkers = [];
         },
 
-        /**
-         * CAPTURA E CONVERSÃO DO ARQUIVO PARA BASE64
-         */
         onUploadArquivo: function (oEvent) {
             var oFileUploader = oEvent.getSource();
             var oFile = oEvent.getParameter("files")[0];
@@ -201,17 +171,12 @@ sap.ui.define([
             oReader.onload = function (e) {
                 var sBase64Result = e.target.result;
                 oBindingContext.getModel().setProperty(oBindingContext.getPath() + "/arquivoBase64", sBase64Result);
-                
-                // Força o preenchimento automático do nome do arquivo no modelo correspondente
                 oBindingContext.getModel().setProperty(oBindingContext.getPath() + "/arquivoNome", oFile.name);
-                MessageToast.show("Arquivo anexado! Clique em Salvar para fixar na memória.");
+                MessageToast.show("Arquivo lido! Clique em 'Salvar Dados' para gravar.");
             };
             oReader.readAsDataURL(oFile);
         },
 
-        /**
-         * VISUALIZADOR DE DOCUMENTOS EM NOVA JANELA
-         */
         onVisualizarArquivo: function (oEvent) {
             var oItem = oEvent.getSource().getBindingContext("view").getObject();
             var sDataUrl = oItem.arquivoBase64;
@@ -219,43 +184,44 @@ sap.ui.define([
             if (sDataUrl) {
                 var newWindow = window.open();
                 if (newWindow) {
-                    newWindow.document.write("<title>" + (oItem.tipo || oItem.hotel || oItem.voo || "Documento") + "</title>");
+                    newWindow.document.write("<title>Visualizador - Férias 1000</title>");
                     if (sDataUrl.startsWith("data:application/pdf")) {
                         newWindow.document.write("<iframe width='100%' height='100%' style='border:none;' src='" + sDataUrl + "'></iframe>");
                     } else {
-                        newWindow.document.write("<body style='margin:0; display:flex; justify-content:center; align-items:center; background:#333;'><img style='max-width:100%; max-height:100vh; object-fit:contain;' src='" + sDataUrl + "'/></body>");
+                        newWindow.document.write("<body style='margin:0; display:flex; justify-content:center; align-items:center; background:#222;'><img style='max-width:100%; max-height:100vh;' src='" + sDataUrl + "'/></body>");
                     }
                     newWindow.document.close();
                 } else {
-                    MessageToast.show("Permita os pop-ups para visualizar o arquivo.");
+                    MessageToast.show("Por favor, libere pop-ups no seu navegador.");
                 }
             } else {
-                MessageToast.show("Nenhum arquivo localizado.");
+                MessageToast.show("Nenhum anexo localizado.");
             }
         },
 
         /**
-         * BOTÃO SALVAR COMPLETO - Sincroniza e envia blindado para o LocalStorage
+         * SALVAMENTO CONSOLIDADO SEGURO
          */
         onSalvarDados: function () {
             var oModel = this.getView().getModel("view");
             if (oModel) {
-                // Força a atualização pendente de todas as amarrações de input ativas no UI5
+                // Força o empurrão imediato dos dados do front-end para as tabelas internas do modelo JSON
                 oModel.updateBindings(true);
 
                 var aDocumentos = oModel.getProperty("/documentos") || [];
                 var aReservas = oModel.getProperty("/reservas") || [];
                 var aPassagens = oModel.getProperty("/passagens") || [];
 
+                // Grava as Strings convertidas em definitivo no dispositivo móvel
                 localStorage.setItem("ferias1000_documentos", JSON.stringify(aDocumentos));
                 localStorage.setItem("ferias1000_reservas", JSON.stringify(aReservas));
                 localStorage.setItem("ferias1000_passagens", JSON.stringify(aPassagens));
 
-                MessageToast.show("Todas as informações e passagens foram gravadas no celular!");
+                MessageToast.show("Perfeito! Todos os seus dados foram gravados de forma segura.");
             }
         },
 
-        /* GESTÃO DE LINHAS DAS TABELAS */
+        /* PROCESSAMENTO DINÂMICO DE INCLUSÃO E EXCLUSÃO */
         onAdicionarDocumento: function () {
             var oModel = this.getView().getModel("view");
             var aLista = oModel.getProperty("/documentos") || [];
