@@ -1,67 +1,25 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE HTML>
+<html>
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Férias 1000 - Travel Assistant</title>
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <title>Férias 1000</title>
 
     <script id="sap-ui-bootstrap"
-        src="https://sdk.openui5.org/resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_fiori_3"
-        data-sap-ui-libs="sap.m, sap.ui.core, sap.ui.unified"
+        src="https://ui5.sap.com/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
         data-sap-ui-resourceroots='{"ferias1000": "./"}'
-        data-sap-ui-compatVersion="edge"
-        data-sap-ui-async="true">
-    </script>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <link rel="stylesheet" href="css/style.css">
-
-    <script>
-        sap.ui.getCore().attachInit(function () {
-            // Criação do modelo de dados inicial estruturado
-            var oModel = new sap.ui.model.json.JSONModel({
-                local: {
-                    cidade: "Aguardando...",
-                    latitude: 0,
-                    longitude: 0
-                },
-                clima: {
-                    temp: "--"
-                },
-                lugares: [],
-                documentos: JSON.parse(localStorage.getItem("ferias1000_documentos")) || [],
-                reservas: [],
-                passagens: []
-            });
-            oModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
-
-            // Instanciação e exibição da View Principal
-            sap.ui.core.mvc.XMLView.create({
-                viewName: "ferias1000.view.Main"
-            }).then(function (oView) {
-                oView.setModel(oModel, "view");
-                oView.placeAt("content");
-            });
-        });
-
-        // Registro isolado e seguro do Service Worker para o Modo Offline
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(function(reg) {
-                        console.log('Service Worker ativo no escopo:', reg.scope);
-                    })
-                    .catch(function(err) {
-                        console.warn('Registro do Service Worker ignorado ou pendente:', err);
-                    });
-            });
-        }
+        data-sap-ui-async="true"
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-compatVersion="edge">
     </script>
 </head>
+
 <body class="sapUiBody" id="content">
+    <div data-sap-ui-component 
+         data-name="ferias1000" 
+         data-id="container" 
+         data-settings='{"id" : "ferias1000"}'>
+    </div>
 </body>
 </html>
