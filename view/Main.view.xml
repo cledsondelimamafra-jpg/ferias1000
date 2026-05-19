@@ -72,7 +72,7 @@
                                 <OverflowToolbar>
                                     <Title text="Meus Documentos de Viagem" level="H2" titleStyle="H4" />
                                     <ToolbarSpacer />
-                                    <Button text="Salvar" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
+                                    <Button text="Salvar Documentos" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
                                     <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarDocumento" />
                                     <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirDocumento" />
                                 </OverflowToolbar>
@@ -86,8 +86,8 @@
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Input value="{view>tipo}" placeholder="Ex: Passaporte, Visto..." />
-                                        <Input value="{view>status}" placeholder="Ex: Válido até 2030" />
+                                        <Input value="{path: 'view>tipo', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Ex: Passaporte, Visto..." />
+                                        <Input value="{path: 'view>status', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Ex: Válido até 2030" />
                                         <u:FileUploader 
                                             buttonText="Procurar..." 
                                             value="{view>arquivoNome}"
@@ -106,7 +106,7 @@
                                 <OverflowToolbar>
                                     <Title text="Minhas Reservas de Hospedagem" level="H2" titleStyle="H4" />
                                     <ToolbarSpacer />
-                                    <Button text="Salvar" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
+                                    <Button text="Salvar Reservas" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
                                     <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarReserva" />
                                     <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirReserva" />
                                 </OverflowToolbar>
@@ -120,8 +120,8 @@
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Input value="{view>hotel}" placeholder="Nome do Hotel ou Airbnb" />
-                                        <Input value="{view>periodo}" placeholder="Ex: 10/10 a 15/10" />
+                                        <Input value="{path: 'view>hotel', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Nome do Hotel ou Airbnb" />
+                                        <Input value="{path: 'view>periodo', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Ex: 10/10 a 15/10" />
                                         <u:FileUploader 
                                             buttonText="Voucher..." 
                                             value="{view>arquivoNome}"
@@ -140,7 +140,7 @@
                                 <OverflowToolbar>
                                     <Title text="Passagens Aéreas / Bilhetes" level="H2" titleStyle="H4" />
                                     <ToolbarSpacer />
-                                    <Button text="Salvar" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
+                                    <Button text="Salvar Passagens" icon="sap-icon://save" type="Emphasized" press="onSalvarDados" />
                                     <Button text="Incluir" icon="sap-icon://add" type="Accept" press="onAdicionarPassagem" />
                                     <Button text="Excluir" icon="sap-icon://delete" type="Reject" press="onExcluirPassagem" />
                                 </OverflowToolbar>
@@ -154,8 +154,8 @@
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Input value="{view>voo}" placeholder="Ex: LATAM LA4567" />
-                                        <Input value="{view>info}" placeholder="Ex: Assento 14A" />
+                                        <Input value="{path: 'view>voo', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Ex: LATAM LA4567" />
+                                        <Input value="{path: 'view>info', type: 'sap.ui.model.type.String'}" valueLiveUpdate="true" placeholder="Ex: Assento 14A" />
                                         <u:FileUploader 
                                             buttonText="Bilhete..." 
                                             value="{view>arquivoNome}"
@@ -170,7 +170,7 @@
 
                     <VBox id="panelManual" visible="false" class="sapUiResponsiveMargin">
                         <Title text="Manual do Assistente de Viagem" level="H2" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                        <FormattedText htmlText="&lt;p&gt;&lt;strong&gt;1. Salvamento Seguro:&lt;/strong&gt; Ao preencher os dados de documentos, reservas ou passagens, lembre-se de clicar no botão &lt;em&gt;Salvar&lt;/em&gt; de cada aba para fixar as informações no seu navegador.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;2. Visualização Dinâmica:&lt;/strong&gt; Sempre que anexar um arquivo válido e salvar, o botão de visualização (ícone de olho) ficará ativo. Ao clicar nele, o documento original abrirá instantaneamente em uma nova aba.&lt;/p&gt;" />
+                        <FormattedText htmlText="&lt;p&gt;&lt;strong&gt;1. Salvamento Seguro Local:&lt;/strong&gt; Ao preencher os dados de documentos, reservas ou passagens, clique no botão &lt;em&gt;Salvar&lt;/em&gt; para fixar de forma blindada na memória interna do seu dispositivo.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;2. Visualização offline:&lt;/strong&gt; O ícone do olho renderiza o documento original direto do celular, independente de conexão de rede externa após salvo.&lt;/p&gt;" />
                     </VBox>
 
                 </content>
