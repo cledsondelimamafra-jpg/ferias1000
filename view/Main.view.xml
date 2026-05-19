@@ -1,22 +1,23 @@
-<mvc:View controllerName="ferias1000.controller.Main" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
-    <Page title="Férias 1000 - Meus Documentos">
-        <content>
-            <VBox class="sapUiSmallMargin">
-                <Input id="inputTipo" value="{view>/novoDoc/tipo}" placeholder="Tipo (Ex: RG, Passaporte)" />
-                <Button text="Salvar Documento" press="onSalvarDocs" type="Emphasized" />
-                <Table items="{view>/documentos}">
-                    <columns>
-                        <Column><Text text="Documento Salvo" /></Column>
-                    </columns>
-                    <items>
-                        <ColumnListItem>
-                            <cells>
-                                <Text text="{view>tipo}" />
-                            </cells>
-                        </ColumnListItem>
-                    </items>
-                </Table>
-            </VBox>
-        </content>
+<mvc:View controllerName="ferias1000.controller.Main" 
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns="sap.m" 
+    xmlns:core="sap.ui.core">
+    <Page title="Férias 1000 - Travel Assistant">
+        <IconTabBar id="idIconTabBar">
+            <items>
+                <IconTabFilter text="Documentos" icon="sap-icon://documents">
+                    <VBox class="sapUiSmallMargin">
+                        <Input id="inputDoc" value="{view>/novoDoc/tipo}" placeholder="Digite o documento" />
+                        <Button text="Salvar" press="onSalvarDocs" type="Emphasized" />
+                        <List items="{view>/documentos}">
+                            <StandardListItem title="{view>tipo}" />
+                        </List>
+                    </VBox>
+                </IconTabFilter>
+                <IconTabFilter text="Mapa" icon="sap-icon://map">
+                    <Text text="Funcionalidade do mapa em breve." />
+                </IconTabFilter>
+            </items>
+        </IconTabBar>
     </Page>
 </mvc:View>
