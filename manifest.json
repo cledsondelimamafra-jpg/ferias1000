@@ -1,18 +1,16 @@
 {
   "_version": "1.12.0",
-  "sap.app": {
-    "id": "ferias1000",
-    "type": "application"
-  },
+  "sap.app": { "id": "ferias1000" },
   "sap.ui5": {
     "rootView": {
       "viewName": "ferias1000.view.Main",
       "type": "XML",
       "async": true
     },
-    "dependencies": {
-      "minUI5Version": "1.60.0",
-      "libs": { "sap.m": {}, "sap.ui.core": {} }
+    "models": {
+      "view": { 
+        "type": "sap.ui.model.json.JSONModel" 
+      }
     }
   }
 }
