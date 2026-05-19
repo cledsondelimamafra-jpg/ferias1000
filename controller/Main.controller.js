@@ -8,8 +8,9 @@ sap.ui.define([
     return Controller.extend("ferias1000.controller.Main", {
 
         onInit: function () {
-            console.log("Main Controller operacional - Clima, Turismo e Abas ativos.");
+            console.log("Main Controller operacional - Correção das abas aplicada.");
             
+            // Banco de dados mockado para pontos turísticos
             this._oPontosTuristicosMock = {
                 "belém": [
                     { nome: "Estação das Docas", lat: -1.4483, lng: -48.5042, desc: "Gastronomia e cultura à beira da baía." },
@@ -29,6 +30,25 @@ sap.ui.define([
 
             this._aMapMarkers = [];
 
+            // Povoando as abas extras com dados padrão para exibição inicial imediata
+            var oModel = this.getView().getModel("view");
+            if (oModel) {
+                oModel.setProperty("/documentos", [
+                    { tipo: "Passaporte Nacional", status: "Válido até 12/2031" },
+                    { tipo: "Apólice de Seguro Viagem", status: "Ativo - Cobertura Global" },
+                    { tipo: "Comprovante de Vacinação", status: "Emitido via ConecteSUS" }
+                ]);
+
+                oModel.setProperty("/reservas", [
+                    { hotel: "Hotel Grand Vista - Quarto Casal Premium", periodo: "05 noites - Confirmado" }
+                ]);
+
+                oModel.setProperty("/passagens", [
+                    { voo: "LATAM LA3412 (GIG -> BEL)", info: "Assento 12C - Embarque às 14:20" }
+                ]);
+            }
+
+            // Ativação do Microfone
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (SpeechRecognition) {
                 this._oRecognition = new SpeechRecognition();
@@ -65,19 +85,18 @@ sap.ui.define([
         },
 
         /**
-         * Gerencia a alternância lógica de visibilidade das Abas (IconTabBar)
+         * Chaveamento lógico de visibilidade de abas (IconTabBar)
          */
         onTabSelect: function (oEvent) {
             var sSelectedKey = oEvent.getParameter("key");
             
-            // Define a visibilidade de cada container com base na aba clicada
             this.getView().byId("panelExplorar").setVisible(sSelectedKey === "explorar");
             this.getView().byId("panelDocumentos").setVisible(sSelectedKey === "documentos");
             this.getView().byId("panelReservas").setVisible(sSelectedKey === "reservas");
             this.getView().byId("panelPassagens").setVisible(sSelectedKey === "passagens");
             this.getView().byId("panelManual").setVisible(sSelectedKey === "manual");
 
-            // Correção crucial para o Leaflet: Se voltou para o mapa, recalcula o espaço gráfico do DOM
+            // Recalcula o tamanho físico do container do Leaflet ao voltar para a aba principal
             if (sSelectedKey === "explorar" && this._oMap) {
                 setTimeout(function() {
                     this._oMap.invalidateSize();
