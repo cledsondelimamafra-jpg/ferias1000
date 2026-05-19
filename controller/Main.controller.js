@@ -7,38 +7,19 @@ sap.ui.define([
 
     return Controller.extend("ferias1000.controller.Main", {
         onInit: function () {
+            // Modelo de dados inicializado
             var oData = {
                 documentos: JSON.parse(localStorage.getItem("ferias1000_documentos") || "[]"),
-                local: { cidade: "Aguardando...", statusVoz: "Aguardando..." }
+                reservas: JSON.parse(localStorage.getItem("ferias1000_reservas") || "[]"),
+                passagens: JSON.parse(localStorage.getItem("ferias1000_passagens") || "[]"),
+                local: { cidade: "Aguardando...", statusVoz: "Pronto" },
+                clima: { temp: "--" }
             };
             this.getView().setModel(new JSONModel(oData), "view");
-
-            // Reconhecimento de Voz
-            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SpeechRecognition) {
-                this._oRecognition = new SpeechRecognition();
-                this._oRecognition.lang = 'pt-BR';
-                this._oRecognition.onresult = function(event) {
-                    var sCidade = event.results[0][0].transcript;
-                    this.getView().getModel("view").setProperty("/local/cidade", sCidade);
-                    this.getView().getModel("view").setProperty("/local/statusVoz", "Cidade: " + sCidade);
-                    // Aqui entra a lógica do mapa que você já tinha
-                }.bind(this);
-            }
-        },
-
-        onFalarDestino: function() {
-            if (this._oRecognition) {
-                this._oRecognition.start();
-                this.getView().getModel("view").setProperty("/local/statusVoz", "Ouvindo...");
-            }
         },
 
         onAfterRendering: function () {
-            this.initMap();
-        },
-
-        initMap: function () {
+            // Inicia o mapa apenas após a renderização da tela
             if (!this._oMap) {
                 var oMapDom = document.getElementById("map");
                 if (oMapDom) {
@@ -48,16 +29,42 @@ sap.ui.define([
             }
         },
 
-        onSalvarDocumentos: function () {
-            var aDocs = this.getView().getModel("view").getProperty("/documentos");
-            localStorage.setItem("ferias1000_documentos", JSON.stringify(aDocs));
-            MessageToast.show("Documentos salvos!");
+        onFalarDestino: function () {
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                var oRecognition = new SpeechRecognition();
+                oRecognition.lang = 'pt-BR';
+                oRecognition.onresult = function (event) {
+                    var sCidade = event.results[0][0].transcript;
+                    this.getView().getModel("view").setProperty("/local/cidade", sCidade);
+                    MessageToast.show("Destino: " + sCidade);
+                }.bind(this);
+                oRecognition.start();
+            } else {
+                MessageToast.show("Navegador não suporta voz.");
+            }
         },
 
-        onAdicionarDocumento: function () {
-            var aDocs = this.getView().getModel("view").getProperty("/documentos");
-            aDocs.push({ tipo: "", status: "", arquivoBase64: "" });
-            this.getView().getModel("view").setProperty("/documentos", aDocs);
+        // Métodos de Persistência (Salvar)
+        onSalvarDocumentos: function () { this._persistir("ferias1000_documentos", "/documentos", "Documentos salvos!"); },
+        onSalvarReservas: function () { this._persistir("ferias1000_reservas", "/reservas", "Reservas salvas!"); },
+        onSalvarPassagens: function () { this._persistir("ferias1000_passagens", "/passagens", "Passagens salvas!"); },
+
+        _persistir: function (sKey, sPath, sMsg) {
+            var aData = this.getView().getModel("view").getProperty(sPath);
+            localStorage.setItem(sKey, JSON.stringify(aData));
+            MessageToast.show(sMsg);
+        },
+
+        // Métodos de Adição de Linhas
+        onAdicionarDocumento: function () { this._adicionarLinha("/documentos", { tipo: "", status: "" }); },
+        onAdicionarReserva: function () { this._adicionarLinha("/reservas", { hotel: "", periodo: "" }); },
+        onAdicionarPassagem: function () { this._adicionarLinha("/passagens", { voo: "", info: "" }); },
+
+        _adicionarLinha: function (sPath, oTemplate) {
+            var aData = this.getView().getModel("view").getProperty(sPath);
+            aData.push(oTemplate);
+            this.getView().getModel("view").setProperty(sPath, aData);
         }
     });
 });
