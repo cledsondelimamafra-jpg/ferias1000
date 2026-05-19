@@ -8,17 +8,17 @@ sap.ui.define([
     return Controller.extend("ferias1000.controller.Main", {
 
         onInit: function () {
-            console.log("Main Controller - Inicializando modelo e checando LocalStorage...");
+            console.log("Main Controller operacional - Iniciando leitura das abas.");
             this._aMapMarkers = [];
 
-            // 1. Tenta recuperar dados antigos diretamente no início do ciclo de vida
+            // 1. Tenta recuperar dados de cada chave do localStorage de forma independente
             var sDocumentosSalvos = localStorage.getItem("ferias1000_documentos");
             var sReservasSalvas = localStorage.getItem("ferias1000_reservas");
             var sPassagensSalvas = localStorage.getItem("ferias1000_passagens");
 
-            // 2. Monta a estrutura inicial injetando o que foi recuperado (ou array vazio)
+            // 2. Prepara a estrutura com os dados recuperados ou arrays vazios
             var oData = {
-                local: { cidade: "Aguardando..." },
+                local: { cidade: "Aguardando...", statusVoz: "Aguardando comando..." },
                 clima: { temp: "--" },
                 lugares: [],
                 documentos: sDocumentosSalvos ? JSON.parse(sDocumentosSalvos) : [],
@@ -26,14 +26,12 @@ sap.ui.define([
                 passagens: sPassagensSalvas ? JSON.parse(sPassagensSalvas) : []
             };
 
-            // 3. Instancia e define o modelo DIRETAMENTE na View para garantir amarração correta
+            // 3. Define o modelo na View com TwoWay binding ativo por padrão
             var oModel = new JSONModel(oData);
             oModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
             this.getView().setModel(oModel, "view");
 
-            console.log("Dados carregados com sucesso no modelo 'view':", oData);
-
-            // Inicialização do Reconhecimento de Voz nativo
+            // Configuração do Speech Recognition nativo
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (SpeechRecognition) {
                 this._oRecognition = new SpeechRecognition();
@@ -78,7 +76,7 @@ sap.ui.define([
         onFalarDestino: function () {
             if (this._oRecognition) {
                 this._oRecognition.start();
-                MessageToast.show("Ouvindo... Fale o destino da sua viagem!");
+                this.getView().getModel("view").setProperty("/local/statusVoz", "Ouvindo... Fale agora!");
             }
         },
 
@@ -89,6 +87,7 @@ sap.ui.define([
             var oModel = this.getView().getModel("view");
             if (oModel) {
                 oModel.setProperty("/local/cidade", sCidade);
+                oModel.setProperty("/local/statusVoz", "Buscando por: '" + sCidade + "'");
                 this._buscarGeocodificacao(sCidade);
             }
         },
@@ -192,9 +191,12 @@ sap.ui.define([
             var oReader = new FileReader();
             oReader.onload = function (e) {
                 var sBase64Result = e.target.result;
-                oBindingContext.getModel().setProperty(oBindingContext.getPath() + "/arquivoBase64", sBase64Result);
-                oBindingContext.getModel().setProperty(oBindingContext.getPath() + "/arquivoNome", oFile.name);
-                MessageToast.show("Arquivo processado temporariamente. Clique em 'Salvar Dados' para fixar.");
+                var oModel = oBindingContext.getModel();
+                var sPath = oBindingContext.getPath();
+
+                oModel.setProperty(sPath + "/arquivoBase64", sBase64Result);
+                oModel.setProperty(sPath + "/arquivoNome", oFile.name);
+                MessageToast.show("Arquivo processado. Clique em 'Salvar' nesta aba para persistir.");
             };
             oReader.readAsDataURL(oFile);
         },
@@ -214,41 +216,50 @@ sap.ui.define([
                     }
                     newWindow.document.close();
                 } else {
-                    MessageToast.show("Por favor, libere pop-ups no seu navegador.");
+                    MessageToast.show("Por favor, desative o bloqueador de pop-ups.");
                 }
             } else {
-                MessageToast.show("Nenhum anexo localizado.");
+                MessageToast.show("Nenhum arquivo anexado.");
             }
         },
 
         /**
-         * SALVAMENTO DIRETÃO E SEGURO
+         * SALVAMENTOS INDIVIDUAIS POR ABA
          */
-        onSalvarDados: function () {
+        onSalvarDocumentos: function () {
             var oModel = this.getView().getModel("view");
             if (oModel) {
-                // Força o SAPUI5 a validar todas as inputs pendentes
-                oModel.updateBindings(true);
-
+                oModel.updateBindings(true); // Força atualização do estado das inputs
                 var aDocumentos = oModel.getProperty("/documentos") || [];
-                var aReservas = oModel.getProperty("/reservas") || [];
-                var aPassagens = oModel.getProperty("/passagens") || [];
-
-                // Salva no LocalStorage
                 localStorage.setItem("ferias1000_documentos", JSON.stringify(aDocumentos));
-                localStorage.setItem("ferias1000_reservas", JSON.stringify(aReservas));
-                localStorage.setItem("ferias1000_passagens", JSON.stringify(aPassagens));
-
-                console.log("Mecanismo acionado! Gravado no LocalStorage com sucesso.");
-                console.log("Docs salvos:", aDocumentos);
-
-                MessageToast.show("Dados e anexos persistidos com sucesso!");
-            } else {
-                console.error("Erro fatal: Modelo 'view' não encontrado ao tentar salvar.");
+                console.log("LocalStorage Atualizado (Documentos):", aDocumentos);
+                MessageToast.show("Documentos salvos com sucesso!");
             }
         },
 
-        /* PROCESSAMENTO DINÂMICO DE INCLUSÃO E EXCLUSÃO */
+        onSalvarReservas: function () {
+            var oModel = this.getView().getModel("view");
+            if (oModel) {
+                oModel.updateBindings(true);
+                var aReservas = oModel.getProperty("/reservas") || [];
+                localStorage.setItem("ferias1000_reservas", JSON.stringify(aReservas));
+                console.log("LocalStorage Atualizado (Reservas):", aReservas);
+                MessageToast.show("Reservas salvas com sucesso!");
+            }
+        },
+
+        onSalvarPassagens: function () {
+            var oModel = this.getView().getModel("view");
+            if (oModel) {
+                oModel.updateBindings(true);
+                var aPassagens = oModel.getProperty("/passagens") || [];
+                localStorage.setItem("ferias1000_passagens", JSON.stringify(aPassagens));
+                console.log("LocalStorage Atualizado (Passagens):", aPassagens);
+                MessageToast.show("Passagens salvas com sucesso!");
+            }
+        },
+
+        /* GERENCIAMENTO DE LINHAS */
         onAdicionarDocumento: function () {
             var oModel = this.getView().getModel("view");
             var aLista = oModel.getProperty("/documentos") || [];
