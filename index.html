@@ -8,19 +8,15 @@
         data-sap-ui-theme="sap_horizon"
         data-sap-ui-resourceroots='{"ferias1000": "./"}'
         data-sap-ui-async="true"
-        data-sap-ui-libs="sap.m, sap.ui.core"
+        data-sap-ui-preload="false" 
         data-sap-ui-compatVersion="edge">
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
-            // Aqui garantimos que o 'sap.m' está carregado antes de usar o Shell
-            sap.ui.require(["sap/m/Shell", "sap/ui/core/ComponentContainer"], function (Shell, ComponentContainer) {
-                new Shell({
-                    app: new ComponentContainer({
-                        name: "ferias1000",
-                        height: "100%",
-                        async: true
-                    })
+            sap.ui.require(["sap/ui/core/ComponentContainer"], function (ComponentContainer) {
+                new ComponentContainer({
+                    name: "ferias1000",
+                    async: true
                 }).placeAt("content");
             });
         });
