@@ -1,12 +1,16 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <title>Férias 1000</title>
+    <link rel="stylesheet" type="text/css" href="https://ui5.sap.com/resources/sap/ui/core/themes/sap_horizon/library.css">
+    
     <script id="sap-ui-bootstrap"
         src="https://ui5.sap.com/resources/sap-ui-core.js"
         data-sap-ui-theme="sap_horizon"
         data-sap-ui-resourceroots='{"ferias1000": "./"}'
         data-sap-ui-async="true"
+        data-sap-ui-compatVersion="edge"
         data-sap-ui-preload="false">
     </script>
     <script>
@@ -14,7 +18,8 @@
             sap.ui.require(["sap/ui/core/ComponentContainer"], function (ComponentContainer) {
                 new ComponentContainer({
                     name: "ferias1000",
-                    async: true
+                    async: true,
+                    height: "100%"
                 }).placeAt("content");
             });
         });
