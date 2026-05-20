@@ -1,24 +1,28 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/model/json/JSONModel"
-], function (Controller, JSONModel) {
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageToast"
+], function (Controller, JSONModel, MessageToast) {
     "use strict";
-
     return Controller.extend("ferias1000.controller.Main", {
         onInit: function () {
-            console.log("Controller Iniciado! Tentando carregar modelo...");
-            
             var oData = {
-                novoDoc: { tipo: "Teste de Renderização" },
-                documentos: [ {tipo: "RG"}, {tipo: "Passaporte"} ]
+                novoDoc: { tipo: "" },
+                documentos: JSON.parse(localStorage.getItem("docs_salvos") || "[]")
             };
-            
-            var oModel = new JSONModel(oData);
-            
-            // Forçamos o modelo no Core, não apenas na View
-            this.getView().setModel(oModel, "view");
-            
-            console.log("Modelo 'view' atribuído com sucesso!");
+            this.getView().setModel(new JSONModel(oData), "view");
+        },
+        onSalvarDocs: function () {
+            var oModel = this.getView().getModel("view");
+            var oNovo = oModel.getProperty("/novoDoc");
+            var aDocs = oModel.getProperty("/documentos");
+            if (oNovo.tipo) {
+                aDocs.push({ tipo: oNovo.tipo });
+                localStorage.setItem("docs_salvos", JSON.stringify(aDocs));
+                oModel.setProperty("/documentos", aDocs);
+                oModel.setProperty("/novoDoc/tipo", "");
+                MessageToast.show("Salvo!");
+            }
         }
     });
 });
