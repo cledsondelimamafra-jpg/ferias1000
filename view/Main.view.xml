@@ -11,13 +11,13 @@
                             <VBox class="sapUiSmallMargin">
                                 <Input id="inputDoc" value="{view>/novoDoc/tipo}" placeholder="Digite o documento" />
                                 <Button text="Salvar" press="onSalvarDocs" type="Emphasized" />
-                                <List id="listDocs" items="{view>/documentos}">
+                                <List id="listDocs" items="{path: 'view>/documentos', templateShareable: false}">
                                     <StandardListItem title="{view>tipo}" />
                                 </List>
                             </VBox>
                         </IconTabFilter>
                         <IconTabFilter text="Mapa" icon="sap-icon://map">
-                            <Text text="Aqui você deve colocar o seu componente de Mapa" />
+                            <Text text="Área reservada para o Mapa" />
                         </IconTabFilter>
                     </items>
                 </IconTabBar>
