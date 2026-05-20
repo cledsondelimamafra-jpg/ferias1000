@@ -1,25 +1,27 @@
 <mvc:View controllerName="ferias1000.controller.Main" 
     xmlns:mvc="sap.ui.core.mvc" 
-    xmlns="sap.m" 
+    xmlns="sap.m"
     displayBlock="true">
     <App>
         <Page title="Férias 1000 - Travel Assistant">
-            <IconTabBar stretchContentHeight="true">
-                <items>
-                    <IconTabFilter text="Documentos" icon="sap-icon://documents">
-                        <VBox class="sapUiSmallMargin">
-                            <Input id="inputDoc" value="{view>/novoDoc/tipo}" placeholder="Digite o documento" />
-                            <Button text="Salvar" press="onSalvarDocs" type="Emphasized" />
-                            <List items="{view>/documentos}">
-                                <StandardListItem title="{view>tipo}" />
-                            </List>
-                        </VBox>
-                    </IconTabFilter>
-                    <IconTabFilter text="Mapa" icon="sap-icon://map">
-                        <Text text="Mapa ativo - Funcionalidade carregada." />
-                    </IconTabFilter>
-                </items>
-            </IconTabBar>
+            <content>
+                <IconTabBar id="idIconTabBar" stretchContentHeight="true">
+                    <items>
+                        <IconTabFilter text="Documentos" icon="sap-icon://documents">
+                            <VBox class="sapUiSmallMargin">
+                                <Input id="inputDoc" value="{view>/novoDoc/tipo}" placeholder="Digite o documento" />
+                                <Button text="Salvar" press="onSalvarDocs" type="Emphasized" />
+                                <List id="listDocs" items="{view>/documentos}">
+                                    <StandardListItem title="{view>tipo}" />
+                                </List>
+                            </VBox>
+                        </IconTabFilter>
+                        <IconTabFilter text="Mapa" icon="sap-icon://map">
+                            <Text text="Aqui você deve colocar o seu componente de Mapa" />
+                        </IconTabFilter>
+                    </items>
+                </IconTabBar>
+            </content>
         </Page>
     </App>
 </mvc:View>
