@@ -1,23 +1,86 @@
-<mvc:View controllerName="ferias1000.controller.Main" 
-    xmlns:mvc="sap.ui.core.mvc" 
+<mvc:View
+    controllerName="ferias1000.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:u="sap.ui.unified"
     displayBlock="true">
-    <App>
-        <Page title="Férias 1000 - Travel Assistant">
+
+    <App id="app">
+        <Page title="Férias 1000 - Planejador &amp; Carteira">
             <content>
-                <IconTabBar id="idIconTabBar" stretchContentHeight="true">
+                <IconTabBar id="idIconTabBar" expandable="false" stretchContentHeight="true">
                     <items>
-                        <IconTabFilter text="Documentos" icon="sap-icon://documents">
-                            <VBox class="sapUiSmallMargin">
-                                <Input id="inputDoc" value="{view>/novoDoc/tipo}" placeholder="Digite o documento" />
-                                <Button text="Salvar" press="onSalvarDocs" type="Emphasized" />
-                                <List id="listDocs" items="{path: 'view>/documentos', templateShareable: false}">
-                                    <StandardListItem title="{view>tipo}" />
-                                </List>
-                            </VBox>
+                        <IconTabFilter icon="sap-icon://map-2" text="Explorar">
+                            <ScrollContainer vertical="true" height="100%">
+                                <core:HTML content='&lt;div id="map" style="height: 350px; width: 100%; border-bottom: 2px solid #346191;"&gt;&lt;/div&gt;' />
+                                <VBox class="sapUiSmallMargin">
+                                    <Panel headerText="Dados do Local">
+                                        <HBox justifyContent="SpaceAround" alignItems="Center">
+                                            <VBox alignItems="Center">
+                                                <Label text="Cidade" design="Bold" />
+                                                <Text text="{view>/local/cidade}" />
+                                                <Text text="{view>/local/pais}" />
+                                            </VBox>
+                                            <VBox alignItems="Center">
+                                                <Label text="Clima" design="Bold" />
+                                                <Title text="{view>/clima/temp}" />
+                                                <Text text="{view>/clima/desc}" />
+                                            </VBox>
+                                        </HBox>
+                                    </Panel>
+
+                                    <List items="{view>/lugares}" headerText="Atrações e Gastronomia" class="sapUiSmallMarginTop">
+                                        <CustomListItem>
+                                            <HBox alignItems="Center" class="sapUiSmallMargin">
+                                                <Image src="{view>image}" width="100px" height="70px" densityAware="false" class="sapUiSmallMarginEnd" />
+                                                <VBox>
+                                                    <Title text="{view>name}" wrapping="true" level="H4" />
+                                                    <Label text="{view>category}" />
+                                                </VBox>
+                                            </HBox>
+                                        </CustomListItem>
+                                    </List>
+                                </VBox>
+                            </ScrollContainer>
                         </IconTabFilter>
-                        <IconTabFilter text="Mapa" icon="sap-icon://map">
-                            <Text text="Área reservada para o Mapa" />
+
+                        <IconTabFilter icon="sap-icon://wallet" text="Documentos">
+                            <ScrollContainer vertical="true" height="100%">
+                                <VBox class="sapUiSmallMargin">
+                                    <Panel headerText="Arquivar Novo Documento" expandable="true" expanded="false">
+                                        <VBox spacing="10">
+                                            <Label text="Tipo de Documento" required="true" />
+                                            <Input id="inputTipo" placeholder="Ex: Passaporte do João, Visto EUA..." />
+                                            
+                                            <Label text="Data de Validade" required="true" />
+                                            <DatePicker id="inputValidade" displayFormat="dd/MM/yyyy" valueFormat="yyyy-MM-dd" />
+                                            
+                                            <Label text="Upload da Foto/Imagem" required="true" />
+                                            <u:FileUploader id="fileUploader" buttonText="Escolher Foto" fileType="jpg,png,jpeg" change="onFileUpload" width="100%" />
+                                            
+                                            <Button text="Salvar na Carteira" type="Emphasized" press="onSalvarDoc" icon="sap-icon://save" />
+                                        </VBox>
+                                    </Panel>
+
+                                    <List id="listaDocs" items="{view>/documentos}" headerText="Meus Documentos Gravados" noDataText="Nenhum documento arquivado" class="sapUiMediumMarginTop">
+                                        <items>
+                                            <CustomListItem type="Active" press="onVerDocumento">
+                                                <HBox alignItems="Center" justifyContent="SpaceBetween" class="sapUiSmallMargin">
+                                                    <HBox alignItems="Center">
+                                                        <core:Icon src="sap-icon://attachment" size="2rem" class="sapUiSmallMarginEnd" color="{view>estadoColor}" />
+                                                        <VBox>
+                                                            <Title text="{view>tipo}" />
+                                                            <ObjectStatus text="Vencimento: {view>validadeFormatada}" state="{view>estado}" />
+                                                        </VBox>
+                                                    </HBox>
+                                                    <Button icon="sap-icon://delete" type="Transparent" press="onDeletarDoc" color="Critical" />
+                                                </HBox>
+                                            </CustomListItem>
+                                        </items>
+                                    </List>
+                                </VBox>
+                            </ScrollContainer>
                         </IconTabFilter>
                     </items>
                 </IconTabBar>
