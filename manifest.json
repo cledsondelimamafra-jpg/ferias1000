@@ -9,9 +9,6 @@
     },
     "dependencies": {
       "libs": { "sap.m": {}, "sap.ui.core": {} }
-    },
-    "models": {
-      "view": { "type": "sap.ui.model.json.JSONModel" }
     }
   }
 }
