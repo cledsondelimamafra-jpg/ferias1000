@@ -20,11 +20,9 @@ sap.ui.define([
             this._tempFotoBase64 = "";
         },
 
-        // --- LÓGICA DE PERSISTÊNCIA E GRAVAÇÃO ---
         onSalvarDoc: function () {
             const oView = this.getView();
             const oModel = oView.getModel("view");
-            
             const sTipo = this.byId("inputTipo").getValue();
             const oDatePicker = this.byId("inputValidade");
             const sValidadeRaw = oDatePicker.getDateValue();
@@ -38,23 +36,28 @@ sap.ui.define([
             const oNovoDoc = {
                 id: Date.now(),
                 tipo: sTipo,
-                validade: oDatePicker.getValue(),
                 validadeFormatada: sValidadeRaw.toLocaleDateString('pt-BR'),
                 foto: this._tempFotoBase64,
                 estado: oStatus.estado,
                 estadoColor: oStatus.color
             };
 
-            // Pega o array atual e cria uma NOVA referência (imutable pattern)
             const aDocs = oModel.getProperty("/documentos");
             const aDocsAtualizado = [...aDocs, oNovoDoc];
 
-            // Atualiza o modelo e o localStorage
             oModel.setProperty("/documentos", aDocsAtualizado);
             localStorage.setItem("ferias1000_docs", JSON.stringify(aDocsAtualizado));
 
             this._limparCamposDoc();
-            MessageToast.show("Documento arquivado com sucesso!");
+            MessageToast.show("Documento arquivado!");
+        },
+
+        _calcularStatus: function (dValidade) {
+            const hoje = new Date();
+            const diff = Math.ceil((dValidade - hoje) / (1000 * 60 * 60 * 24));
+            if (diff < 0) return { estado: "Error", color: "#e30000" };
+            if (diff <= 90) return { estado: "Warning", color: "#ff8c00" };
+            return { estado: "Success", color: "#2b7d2b" };
         },
 
         _carregarDocsLocalStorage: function () {
@@ -65,15 +68,23 @@ sap.ui.define([
         _limparCamposDoc: function () {
             this.byId("inputTipo").setValue("");
             this.byId("inputValidade").setValue("");
-            // O FileUploader precisa do método clear()
-            if (this.byId("fileUploader")) {
-                this.byId("fileUploader").clear();
-            }
+            if (this.byId("fileUploader")) this.byId("fileUploader").clear();
             this._tempFotoBase64 = "";
         },
 
-        // --- MANTENHA SUAS OUTRAS FUNÇÕES ABAIXO ---
-        // (onAfterRendering, _onMapClick, _buscarCidade, _buscarClima, _buscarLugares, onFileUpload, onVerDocumento, onDeletarDoc, _calcularStatus)
-        // ... cole o restante do seu código original aqui ...
+        onFileUpload: function (oEvent) {
+            const file = oEvent.getParameter("files")[0];
+            const reader = new FileReader();
+            reader.onload = (e) => { this._tempFotoBase64 = e.target.result; };
+            reader.readAsDataURL(file);
+        },
+
+        onDeletarDoc: function (oEvent) {
+            const oItem = oEvent.getSource().getBindingContext("view").getObject();
+            let aDocs = this.getView().getModel("view").getProperty("/documentos");
+            aDocs = aDocs.filter(d => d.id !== oItem.id);
+            this.getView().getModel("view").setProperty("/documentos", aDocs);
+            localStorage.setItem("ferias1000_docs", JSON.stringify(aDocs));
+        }
     });
 });
