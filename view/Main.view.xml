@@ -51,19 +51,23 @@
                                     <Panel headerText="Arquivar Novo Documento" expandable="true" expanded="false">
                                         <VBox spacing="10">
                                             <Label text="Tipo de Documento" required="true" />
-                                            <Input id="inputTipo" placeholder="Ex: Passaporte do João, Visto EUA..." />
+                                            <Input id="inputTipo" placeholder="Ex: Passaporte, Visto..." />
                                             
                                             <Label text="Data de Validade" required="true" />
                                             <DatePicker id="inputValidade" displayFormat="dd/MM/yyyy" valueFormat="yyyy-MM-dd" />
                                             
-                                            <Label text="Upload da Foto/Imagem" required="true" />
+                                            <Label text="Upload da Foto" required="true" />
                                             <u:FileUploader id="fileUploader" buttonText="Escolher Foto" fileType="jpg,png,jpeg" change="onFileUpload" width="100%" />
                                             
                                             <Button text="Salvar na Carteira" type="Emphasized" press="onSalvarDoc" icon="sap-icon://save" />
                                         </VBox>
                                     </Panel>
 
-                                    <List id="listaDocs" items="{view>/documentos}" headerText="Meus Documentos Gravados" noDataText="Nenhum documento arquivado" class="sapUiMediumMarginTop">
+                                    <List id="listaDocs" 
+                                          items="{path: 'view>/documentos', templateShareable: false}" 
+                                          headerText="Meus Documentos Gravados" 
+                                          noDataText="Nenhum documento arquivado" 
+                                          class="sapUiMediumMarginTop">
                                         <items>
                                             <CustomListItem type="Active" press="onVerDocumento">
                                                 <HBox alignItems="Center" justifyContent="SpaceBetween" class="sapUiSmallMargin">
@@ -74,7 +78,7 @@
                                                             <ObjectStatus text="Vencimento: {view>validadeFormatada}" state="{view>estado}" />
                                                         </VBox>
                                                     </HBox>
-                                                    <Button icon="sap-icon://delete" type="Transparent" press="onDeletarDoc" color="Critical" />
+                                                    <Button icon="sap-icon://delete" type="Transparent" press="onDeletarDoc" />
                                                 </HBox>
                                             </CustomListItem>
                                         </items>
